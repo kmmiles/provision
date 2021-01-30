@@ -78,3 +78,12 @@ if ! "${__root}"/bin/install-podman >> "$LOGFILE" 2>&1; then
 else
   status_ok
 fi
+
+# Install dotfiles
+status_msg "Installing dotfiles..."
+if ! "${__root}"/bin/install-dotfiles >> "$LOGFILE" 2>&1; then
+  status_fail
+  exit 1
+else
+  status_ok
+fi
