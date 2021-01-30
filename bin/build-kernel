@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+#shellcheck source=../common.profile
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+require_non_root
+require_wsl
+require_winhome
+
+#kernel_url="https://github.com/microsoft/WSL2-Linux-Kernel/archive/4.19.128-microsoft-standard.tar.gz"
+kernel_url=https://github.com/microsoft/WSL2-Linux-Kernel/archive/linux-msft-5.4.83.tar.gz
+kernel_config="${__root}/etc/config-kernel-latest"
+kernel_tar="$HOME/winhome/Downloads/$(basename $kernel_url)"
+kernel_builddir="${__root}/kernelbuild"
+
+# Ensure the kernel source is extracted to $KERNEL_BUILDDIR
+if [ ! -d "$kernel_builddir" ]; then
+  # download kernel tarball if necessary
+  if [ ! -f "$kernel_tar" ]; then
+    echo "Downloading: $kernel_url -> $kernel_tar"
+    curl -L "$kernel_url" -o "$kernel_tar"
+  fi
+
+  # extract kernel tarball 
+  status_msg "Extracting kernel sources..."
+  mkdir -p "$kernel_builddir"
+  tar xfz "$kernel_tar" -C "$kernel_builddir" --strip-components=1
+  status_ok
+fi
+
+# copy kernel config
+cp -v "$kernel_config" "$kernel_builddir/.config"
+
+# build kernel
+echo "Building kernel @ ${kernel_builddir}..."
+cd "$kernel_builddir"
+make -j8 
+#sudo make modules_install

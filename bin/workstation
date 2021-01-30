@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+#shellcheck source=../common.profile
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+require_non_root
+enable_logfile
+
+# Try to prevent as many password prompts as possible
+status_msg "Enable passwordless sudo for \"$USER\"..."
+if ! "${__root}"/bin/passwordless-sudo >> "$LOGFILE" 2>&1; then
+  status_fail
+  exit 1
+else
+  status_ok
+fi
+
+# If we're using WSL2 we want to cache package downloads on the host machine
+if is_wsl; then
+  status_msg "Enable winhome cache of apt..."
+  if ! "${__root}"/bin/cache-apt-on-winhome >> "$LOGFILE" 2>&1; then
+    status_fail
+    exit 1
+  else
+    status_ok
+  fi
+fi
+
+# Update packages
+status_msg "Updating packages..."
+if ! "${__root}"/bin/update-packages >> "$LOGFILE" 2>&1; then
+  status_fail
+  exit 1
+else
+  status_ok
+fi
+
+# Upgrade packages
+status_msg "Upgrading packages..."
+if ! "${__root}"/bin/upgrade-packages >> "$LOGFILE" 2>&1; then
+  status_fail
+  exit 1
+else
+  status_ok
+fi
+
+# Install minimal packages
+status_msg "Installing minimal packages..."
+if ! "${__root}"/bin/install-minimal >> "$LOGFILE" 2>&1; then
+  status_fail
+  exit 1
+else
+  status_ok
+fi
+
+# Install dev packages
+status_msg "Installing dev packages..."
+if ! "${__root}"/bin/install-dev >> "$LOGFILE" 2>&1; then
+  status_fail
+  exit 1
+else
+  status_ok
+fi
+
+# Install qemu
+status_msg "Installing qemu..."
+if ! "${__root}"/bin/install-qemu >> "$LOGFILE" 2>&1; then
+  status_fail
+  exit 1
+else
+  status_ok
+fi
+
+# Install podman
+status_msg "Installing podman..."
+if ! "${__root}"/bin/install-podman >> "$LOGFILE" 2>&1; then
+  status_fail
+  exit 1
+else
+  status_ok
+fi

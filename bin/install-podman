@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+#shellcheck source=../common.profile
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+require_non_root
+
+# buster backports repo
+if ! grep -q "buster-backports" /etc/apt/sources.list; then
+  echo 'deb http://deb.debian.org/debian buster-backports main' | sudo tee -a /etc/apt/sources.list
+  sudo apt-get update && \
+  sudo apt-get -y -t buster-backports install \
+    libseccomp2
+fi
+
+
+# kubic repo
+file="/etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list"
+if [ ! -f "$file" ]; then
+  echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' | \
+    sudo tee "$file"
+  curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/Release.key | \
+    sudo apt-key add -
+
+  set -eux; \
+    sudo apt-get update && \
+    sudo apt-get -y install \
+      podman && \
+    sudo mkdir -p /etc/containers /etc/sysctl.d && \
+    sudo cp "$__root"/etc/containers/* /etc/containers/
+    sudo cp "$__root"/etc/sysctl.d/* /etc/sysctl.d/
+fi
+
+# docker alias command
+if ! command -v docker > /dev/null 2>&1; then
+  cat << EOF > /tmp/docker
+#!/bin/sh
+exec /usr/bin/podman "\$@"
+EOF
+  chmod +x /tmp/docker
+  sudo mv /tmp/docker /usr/bin/docker
+fi
+
+# remove debians slirp4netns (busters version is too old)
+if dpkg -l | grep -q slirp4netns > /dev/null 2>&1; then
+  echo "Removing Debians old slirp4netns"
+  sudo apt -y autoremove --purge slirp4netns
+fi
+
+# install slirp4netns
+if ! command -v slirp4netns > /dev/null 2>&1; then
+  curl \
+    -o slirp4netns \
+    --fail \
+    -L https://github.com/rootless-containers/slirp4netns/releases/download/v1.1.8/slirp4netns-"$(uname -m)"
+  chmod +x slirp4netns
+  sudo mv slirp4netns /usr/bin/
+fi

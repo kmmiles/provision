@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+#shellcheck source=../common.profile
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+require_non_root
+require_wsl
+require_winhome
+
+bzsrc="${__root}/kernelbuild/arch/x86/boot/bzImage"
+bzdest="$HOME/winhome/wsl2-kernel-$(date "+%s")"
+wslconfigsrc="${__root}/etc/.wslconfig" 
+wslconfigdest="$HOME/winhome/.wslconfig"
+
+status_msg "Checking for compiled kernel..."
+if [ ! -f "$bzsrc" ]; then
+  status_fail
+  echo "No such file: $bzsrc"
+  echo ""
+  echo "Run bin/build-kernel first!"
+  exit 1
+fi
+status_ok
+
+status_msg "Copying kernel to $bzdest..."
+cp "$bzsrc" "$bzdest"
+status_ok
+
+status_msg "Installing kernel modules..."
+(cd "${__root}/kernelbuild" && sudo make modules_install > /dev/null 2>&1)
+status_ok
+
+status_msg "Copying wslconfig to $wslconfigdest..."
+cp "$wslconfigsrc" "$wslconfigdest"
+status_ok
+
+status_msg "Adding kernel line to wslconfig..."
+bzwindest_single_slashes="$(wslpath -w "$bzdest")"
+bzwindest="${bzwindest_single_slashes//\\/\\\\}"
+echo "kernel=$bzwindest" >> "$wslconfigdest"
+status_ok

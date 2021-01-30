@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+#shellcheck source=../common.profile
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+require_non_root
+
+sudo apt --no-install-recommends -y install \
+  apt-transport-https \
+  bash \
+  sudo \
+  git \
+  curl \
+  manpages

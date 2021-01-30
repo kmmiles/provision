@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+################################################################################
+iso_url="http://tinycorelinux.net/10.x/x86/release/TinyCore-current.iso"
+vm_mem="512"
+vm_vga="std"
+vm_cpu="kvm64,\
++vmx,+vme,+msr,+x2apic,+hypervisor,+aes,+vmx-activity-hlt,\
++vmx-cr3-load-noexit,+vmx-cr3-store-noexit,+vmx-cr8-load-exit,\
++vmx-cr8-store-exit,+vmx-desc-exit,+vmx-entry-ia32e-mode,\
++vmx-entry-load-efer,+vmx-entry-load-pat,+vmx-entry-noload-debugctl,\
++vmx-ept,+vmx-ept-1gb,+vmx-ept-2mb,+vmx-ept-execonly,+vmx-eptad,\
++vmx-exit-ack-intr,+vmx-exit-load-efer,+vmx-exit-load-pat,\
++vmx-exit-nosave-debugctl,+vmx-exit-save-efer,+vmx-exit-save-pat,\
++vmx-exit-save-preemption-timer,+vmx-flexpriority,+vmx-hlt-exit,\
++vmx-intr-exit,+vmx-invept,+vmx-invept-all-context,+vmx-invept-single-context,\
++vmx-invept-single-context,+vmx-invept-single-context-noglobals,+vmx-invlpg-exit,\
++vmx-invvpid,+vmx-invvpid-all-context,+vmx-invvpid-single-addr,+vmx-io-bitmap,\
++vmx-io-exit,+vmx-monitor-exit,+vmx-movdr-exit,+vmx-msr-bitmap,+vmx-mwait-exit,\
++vmx-nmi-exit,+vmx-page-walk-4,+vmx-pause-exit,+vmx-pml,+vmx-preemption-timer,\
++vmx-rdpmc-exit,+vmx-rdtsc-exit,+vmx-secondary-ctls,+vmx-shadow-vmcs,\
++vmx-store-lma,+vmx-true-ctls,+vmx-tsc-offset,+vmx-unrestricted-guest,\
++vmx-vintr-pending,+vmx-vmwrite-vmexit-fields,+vmx-vnmi,+vmx-vnmi-pending,\
++vmx-vpid,+de,+pse,+tsc,+msr,+pae,+mce,+cx8,+apic,+sep,+mtrr,+pge,+mca,+cmov,\
++pat,+pse36,+clflush,+mmx,+fxsr,+sse,+sse2,+ss,+ht,+syscall,+nx,+pdpe1gb,+rdtscp,\
++lm,+pni,+pclmulqdq,+vmx,+ssse3,+fma,+cx16,+pcid,+sse4_1,+sse4_2,+movbe,+popcnt,\
++aes,+xsave,+avx,+f16c,+rdrand,+hypervisor,+lahf_lm,+abm,+3dnowprefetch,+ssbd,\
++ibpb,+stibp,+fsgsbase,+bmi1,+avx2,+smep,+bmi2,+erms,+invpcid,+rdseed,+adx,+smap,\
++clflushopt,+xsaveopt,+xsavec,+xgetbv1,+xsaves"
+vm_cpu_min="kvm64,\
++vmx,+vme,+msr,+x2apic,+hypervisor,+aes,\
++de,+pse,+tsc,+msr,+pae,+mce,+cx8,+apic,+sep,+mtrr,+pge,+mca,+cmov,\
++pat,+pse36,+clflush,+mmx,+fxsr,+sse,+sse2,+ss,+ht,+syscall,+nx,+pdpe1gb,+rdtscp,\
++lm,+pni,+pclmulqdq,+vmx,+ssse3,+fma,+cx16,+pcid,+sse4_1,+sse4_2,+movbe,+popcnt,\
++aes,+xsave,+avx,+f16c,+rdrand,+hypervisor,+lahf_lm,+abm,+3dnowprefetch,+ssbd,\
++ibpb,+fsgsbase,+bmi1,+avx2,+smep,+bmi2,+erms,+invpcid,+rdseed,+adx,+smap,\
++clflushopt,+xsaveopt,+xsavec,+xgetbv1,+xsaves"
+
+################################################################################
+#shellcheck source=../common.profile
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+require_non_root
+require_wsl
+require_winhome
+
+downloads="$HOME/winhome/Downloads"
+if [ ! -d "$downloads" ]; then
+  echo "No such directory: $downloads"
+  exit 1
+fi
+
+iso_file="$downloads/$(basename $iso_url)"
+if [ ! -f "$iso_file" ]; then
+  (cd "$downloads" && curl -LO $iso_url)
+fi
+
+sudo qemu-system-x86_64 \
+  -drive file="$iso_file",media=cdrom,readonly \
+  -net nic -net user \
+  -m $vm_mem \
+  -vga $vm_vga \
+  --enable-kvm \
+  -smp 4 \
+  -cpu $vm_cpu_min

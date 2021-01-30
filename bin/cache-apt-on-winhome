@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+################################################################################
+# Configures apt to cache downloads in the Windows `Downloads` directory.
+# This prevents re-downloading the same packages across WSL2 distributions.
+################################################################################
+
+#shellcheck source=../common.profile
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+require_non_root
+require_wsl
+require_winhome
+
+new_apt_dir="$HOME/winhome/Downloads/apt"
+if ! grep -q "$new_apt_dir" /etc/apt/apt.conf > /dev/null 2>&1; then
+  mkdir -p "$new_apt_dir"
+  echo "dir::cache::archives $new_apt_dir;" > /tmp/apt.conf
+  sudo mv /tmp/apt.conf /etc/apt/apt.conf
+fi
