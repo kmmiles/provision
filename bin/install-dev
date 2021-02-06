@@ -11,5 +11,6 @@ sudo apt --no-install-recommends -y install \
   bison \
   flex \
   libssl-dev \
-  libelf-dev
+  libelf-dev \
+  shellcheck
   

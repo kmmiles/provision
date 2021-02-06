@@ -141,14 +141,8 @@ require_winhome() {
   fi
 
   echo "Creating winhome link in $HOME/winhome..."
-  default_win_drive="$(basename "$(grep drvfs /proc/self/mounts | head -n 1 | cut -d' ' -f 2)")"
-  read -rp "Windows drive? [$default_win_drive]: " win_drive
-  win_drive=${win_drive:-$default_win_drive}
-
-  default_win_user="$(get_default_win_user "$win_drive")"
-  read -rp "Windows user? [$default_win_user]: " win_user
-  win_user=${win_user:-$default_win_user}
-
+  win_drive="$(basename "$(grep drvfs /proc/self/mounts | head -n 1 | cut -d' ' -f 2)")"
+  win_user="$(get_default_win_user "$win_drive")"
   win_home="/mnt/$win_drive/Users/$win_user"
   if [ -d "$win_home" ]; then
     ln -vsf "$win_home" "$HOME/winhome"

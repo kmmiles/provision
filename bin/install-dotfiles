@@ -8,8 +8,10 @@ repo="https://github.com/kmmiles/dotfiles"
 
 if [ ! -d "$HOME/dotfiles" ]; then
   logmsg "Checking out \"$repo\" to \"$HOME/dotfiles\""
-  git clone "$repo" -C "$HOME"
+  git -C "$HOME" clone "$repo"
 fi
 
 logmsg "Running \"dotfiles/bin/link\""
+
+"$HOME"/dotfiles/bin/install-home-tools
 "$HOME"/dotfiles/bin/link

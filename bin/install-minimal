@@ -10,4 +10,25 @@ sudo apt --no-install-recommends -y install \
   sudo \
   git \
   curl \
-  manpages
+  vim \
+  tmux \
+  manpages \
+  unzip \
+  bzip2 \
+  xz-utils
+
+sudo apt --no-install-recommends -y install \
+  dirmngr \
+  gnupg \
+  gnupg-l10n \
+  gnupg-utils \
+  gpg \
+  gpg-agent \
+  gpg-wks-client \
+  gpg-wks-server \
+  gpgconf \
+  gpgsm \
+  libassuan0 \
+  libksba8 \
+  libnpth0 \
+  pinentry-curses
