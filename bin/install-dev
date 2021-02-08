@@ -6,6 +6,7 @@ require_non_root
 
 sudo apt --no-install-recommends -y install \
   build-essential \
+  clang \
   manpages-dev \
   libncurses-dev \
   bison \

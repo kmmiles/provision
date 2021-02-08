@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+#shellcheck source=../common.profile
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+require_non_root
+
+url=https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.sh
+cache_dir="/tmp"
+if is_wsl; then
+  cache_dir="$HOME/winhome/Downloads"
+fi
+
+if [[ ! -f "$cache_dir/$(basename $url)" ]]; then
+  mkdir -p "$cache_dir"
+  cd "$cache_dir"
+  curl -LO $url
+fi

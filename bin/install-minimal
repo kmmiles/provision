@@ -12,6 +12,7 @@ sudo apt --no-install-recommends -y install \
   curl \
   vim \
   tmux \
+  man-db \
   manpages \
   unzip \
   bzip2 \

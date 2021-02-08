@@ -18,6 +18,10 @@ if [[ ! -f $kubic ]]; then
     sudo tee $kubic
 fi
 
+# Add kubic key
+curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/Release.key | \
+  sudo apt-key add -
+
 # update / install
 sudo apt-get update
 sudo apt-get -y -t buster-backports install libseccomp2
