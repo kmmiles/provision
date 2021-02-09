@@ -89,27 +89,30 @@ greenmsg() {
 require_non_root() {
   if [ "$(id -u)" == "0" ]; then
     redmsg "ERROR: Do not run this script as root."
-    exit 1
+    return 1
   fi
+  return 0
 }
 
 require_root() {
   if [ "$(id -u)" != "0" ]; then
     redmsg "ERROR: please run as normal user w/ sudo"
-    exit 1
+    return 1
   fi
 
   if [ -z $SUDO_USER ]; then
     redmsg "ERROR: please run as normal user w/ sudo"
-    exit 1
+    return 1
   fi
+  return 0
 }
 
 require_wsl() {
   if ! is_wsl; then
     redmsg "ERROR: This script requires WSL2."
-    exit 1
+    return 1
   fi
+  return 0
 }
 
 
