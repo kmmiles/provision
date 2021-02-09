@@ -1,6 +1,6 @@
 # provision
 
-debian provision scripts
+ubuntu / debian provision scripts
 
 ## workstation
 

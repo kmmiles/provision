@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+#shellcheck source=../common.profile
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+require_non_root
+
+if chkpath ls bash; then
+  echo "Nice."
+else
+  echo "Not nice."
+fi
+
+if chkpkg acl adduser; then
+  echo "Good packages"
+else
+  echo "ouch packages"
+fi
+
+url=https://packages.microsoft.com/config/ubuntu/20.10/packages-microsoft-prod.deb
+if download $url; then
+  echo "Good download"
+else
+  echo "Ouch download"  
+fi

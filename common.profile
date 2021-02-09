@@ -8,6 +8,7 @@ TEXT_GREEN=$(tput setaf 2)
 TEXT_NORMAL=$(tput sgr0)
 STATUS_MSG=
 LOGFILE=
+DOWNLOADS=
 
 if [ ! -z "${BASH_SOURCE[1]:-}" ]; then
   # sourced from script
@@ -109,8 +110,6 @@ require_wsl() {
     redmsg "ERROR: This script requires WSL2."
     exit 1
   fi
-
-  require_winhome
 }
 
 
@@ -149,12 +148,66 @@ require_winhome() {
   fi
 }
 
+is_ubuntu() {
+  if grep -q "ID=ubuntu" /etc/os-release; then
+    return 0
+  fi
+
+  return 1
+}
+
+is_debian() {
+  if grep -q "ID=debian" /etc/os-release; then
+    return 0
+  fi
+
+  return 1
+}
+
 is_wsl() {
   if command -v wslpath > /dev/null 2>&1; then
     return 0
   fi
 
   return 1
+}
+
+chkpath() {
+  # no programs specified
+  if [[ $# -eq 0 ]]; then
+    return 1
+  fi
+
+  for prog in "$@"; do
+    command -v "$prog" > /dev/null 2>&1 || return 1
+  done
+}
+
+chkpkg() {
+  # no packages specified
+  if [[ $# -eq 0 ]]; then
+    return 1
+  fi
+
+  for pkg in "$@"; do
+    dpkg -V "$pkg" > /dev/null 2>&1 || return 1
+  done
+}
+
+download() {
+  # no urls specified
+  if [[ $# -eq 0 ]]; then
+    return 1
+  fi
+
+  cd "$DOWNLOADS"
+  for url in "$@"; do
+    filename=$(basename "$url")
+    if [[ ! -f "$filename" ]]; then
+      logmsg "Downloading $url..."
+      curl -sfLO "$url"
+    fi
+  done
 }
 
 if [[ "${DEBUG:-}" ]]; then
@@ -164,3 +217,10 @@ else
   set +o xtrace
 fi
 
+if is_wsl; then
+  require_winhome
+  DOWNLOADS="$HOME/winhome/Downloads"
+else
+  DOWNLOADS="$HOME/Downloads"
+  mkdir -p "$DOWNLOADS"
+fi

@@ -4,14 +4,56 @@
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
 require_non_root
 
-sudo apt --no-install-recommends -y install \
-  build-essential \
-  clang \
-  manpages-dev \
-  libncurses-dev \
-  bison \
-  flex \
-  libssl-dev \
-  libelf-dev \
-  shellcheck
-  
+if ! chkpath clang cmake ponyc jq; then
+  logmsg "Installing base dev tools"
+  sudo apt --no-install-recommends -y install \
+    build-essential \
+    clang \
+    manpages-dev \
+    libncurses-dev \
+    bison \
+    flex \
+    libssl-dev \
+    libelf-dev \
+    shellcheck \
+    jq
+fi
+
+if is_ubuntu; then
+  ###################
+  # cmake
+  ###################
+  if ! chkpath cmake; then
+    logmsg "Installing cmake"
+    sudo apt -y --no-install-recommends install cmake cmake-doc
+  fi
+
+  ###################
+  # pony
+  ###################
+  if ! chkpath ponyup; then
+    logmsg "Installing ponyup"
+    sh -c "$(curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/ponylang/ponyup/latest-release/ponyup-init.sh)"
+  fi
+
+  if ! chkpath ponyc; then
+    logmsg "Installing ponyc"
+    ponyup update ponyc release
+  fi 
+
+  ###################
+  # dotnet
+  ###################
+  if ! chkpkg packages-microsoft-prod; then
+    logmsg "Installing microsoft repo"
+    url=https://packages.microsoft.com/config/ubuntu/20.10/packages-microsoft-prod.deb
+    download "$url" && \
+      sudo dpkg -i "$DOWNLOADS/$(basename "$url")"
+  fi
+
+  if ! chkpkg dotnet-sdk-5.0; then
+    logmsg "Installing dotnet sdk"
+    sudo apt-get update
+    sudo apt-get install -y dotnet-sdk-5.0
+  fi
+fi

@@ -7,7 +7,7 @@ enable_logfile
 
 # Try to prevent as many password prompts as possible
 status_msg "Enable passwordless sudo for \"$USER\"..."
-if ! "${__root}"/bin/passwordless-sudo >> "$LOGFILE" 2>&1; then
+if ! "${__root}"/bin/config-sudo >> "$LOGFILE" 2>&1; then
   status_fail
   exit 1
 else
@@ -17,7 +17,7 @@ fi
 # If we're using WSL2 we want to cache package downloads on the host machine
 if is_wsl; then
   status_msg "Enable winhome cache of apt..."
-  if ! "${__root}"/bin/cache-apt-on-winhome >> "$LOGFILE" 2>&1; then
+  if ! "${__root}"/bin/config-apt >> "$LOGFILE" 2>&1; then
     status_fail
     exit 1
   else
@@ -43,9 +43,9 @@ else
   status_ok
 fi
 
-# Install minimal packages
-status_msg "Installing minimal packages..."
-if ! "${__root}"/bin/install-minimal >> "$LOGFILE" 2>&1; then
+# Install base packages
+status_msg "Installing base packages..."
+if ! "${__root}"/bin/install-base >> "$LOGFILE" 2>&1; then
   status_fail
   exit 1
 else
