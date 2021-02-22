@@ -49,9 +49,9 @@ TEXT_RED=$(tput setaf 1)
 TEXT_GREEN=$(tput setaf 2)
 TEXT_NORMAL=$(tput sgr0)
 
-GIT_EDITOR=vim
-VISUAL=vim
-EDITOR=vim
+GIT_EDITOR=nvim
+VISUAL=nvim
+EDITOR=nvim
 HISTCONTROL=ignoredups:erasedups  # no duplicate entries
 HISTSIZE=100000                   # many commands in ongoing session memory
 HISTFILESIZE=100000               # many lines in .bash_history
