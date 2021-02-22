@@ -5,7 +5,7 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
 require_non_root
 
 if chkpath qemu-system-x86_64 qemu-img kvm-ok; then
-  logmsg "Already installed, skipping."
+  log_msg "Already installed, skipping."
   exit 0
 fi
 

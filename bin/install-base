@@ -4,7 +4,7 @@
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
 require_non_root
 
-logmsg "Installing base packages"
+log_msg "Installing base packages"
 
 sudo apt --no-install-recommends -y install \
   apt-transport-https \
@@ -12,7 +12,7 @@ sudo apt --no-install-recommends -y install \
   sudo \
   git \
   curl \
-  vim \
+  neovim \
   tmux \
   man-db \
   manpages \
@@ -20,6 +20,7 @@ sudo apt --no-install-recommends -y install \
   bzip2 \
   xz-utils
 
+# TODO
 sudo apt --no-install-recommends -y install \
   dirmngr \
   gnupg \
@@ -35,3 +36,7 @@ sudo apt --no-install-recommends -y install \
   libksba8 \
   libnpth0 \
   pinentry-curses
+
+# TODO
+sudo apt --no-install-recommends -y install \
+  ffmpeg 

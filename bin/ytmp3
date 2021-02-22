@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+#shellcheck source=../common.profile
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+require_non_root
+
+usage() {
+  cat << EOF >&2
+Usage: $(basename "$0") "<youtubeurl>"
+
+Converts youtube video to mp3
+EOF
+}
+
+url="${1:-}"
+if [[ -z "$url" ]]; then
+  usage
+  exit 1
+fi
+
+if [[ ! -d "$HOME/Music" ]]; then
+  log_err "No such directory: $HOME/Music"
+  exit 1
+fi
+
+cd "$HOME"/Music
+youtube-dl \
+  --extract-audio \
+  --audio-format "mp3" \
+  --restrict-filenames \
+  --output "%(title)s.%(ext)s" \
+  "$url"

@@ -1,6 +1,6 @@
 # provision
 
-ubuntu / debian provision scripts
+provision and install dotfiles for ubuntu and debian
 
 ## workstation
 

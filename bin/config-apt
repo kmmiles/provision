@@ -7,12 +7,20 @@
 #shellcheck source=../common.profile
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
 require_non_root
-require_wsl
-require_winhome
 
-new_apt_dir="$HOME/winhome/Downloads/apt"
-if ! grep -q "$new_apt_dir" /etc/apt/apt.conf > /dev/null 2>&1; then
-  mkdir -p "$new_apt_dir"
-  echo "dir::cache::archives $new_apt_dir;" > /tmp/apt.conf
-  sudo mv /tmp/apt.conf /etc/apt/apt.conf
+if $is_wsl; then
+  apt_conf_dir="/etc/apt/apt.conf.d"
+  cache_dir="$HOME/winhome/Downloads/apt"
+
+  mkdir -p "$cache_dir"
+
+  if [[ ! -f $apt_conf_dir/01cache-dir ]]; then
+    echo "dir::cache::archives $cache_dir;" | \
+      sudo tee "$apt_conf_dir"/01cache-dir > /dev/null 2>&1
+  fi
+
+  if [[ ! -f /etc/apt/apt.conf.d/01keep-debs ]]; then
+    echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' | \
+      sudo tee "$apt_conf_dir"/01keep-debs > /dev/null 2>&1
+  fi
 fi

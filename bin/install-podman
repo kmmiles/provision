@@ -4,50 +4,49 @@
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
 require_non_root
 
-if chkpath podman docker; then
-  logmsg "Already installed, skipping."
-  exit 0
-fi
+if ! chkpath podman docker; then
+  if $is_ubuntu; then
+    . /etc/os-release
+    echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+    curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key | sudo apt-key add -
+    sudo apt-get update
+    sudo apt-get -y upgrade
+    sudo apt-get -y install podman
+  elif $is_debian; then
+    # Add buster backports repo
+    buster_backports=/etc/apt/sources.list.d/buster-backports.list
+    if [[ ! -f $buster_backports ]]; then
+      echo 'deb http://deb.debian.org/debian buster-backports main' | \
+        sudo tee $buster_backports
+    fi
 
-if is_ubuntu; then
-  . /etc/os-release
-  echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-  curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key | sudo apt-key add -
-  sudo apt-get update
-  sudo apt-get -y upgrade
-  sudo apt-get -y install podman
-elif is_debian; then
-  # Add buster backports repo
-  buster_backports=/etc/apt/sources.list.d/buster-backports.list
-  if [[ ! -f $buster_backports ]]; then
-    echo 'deb http://deb.debian.org/debian buster-backports main' | \
-      sudo tee $buster_backports
+    # Add kubic libcontainers repo
+    kubic=/etc/apt/sources.list.d/kubic.list
+    if [[ ! -f $kubic ]]; then
+      echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' | \
+        sudo tee $kubic
+    fi
+
+    # Add kubic key
+    curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/Release.key | \
+      sudo apt-key add -
+
+    # update / install
+    sudo apt-get update
+    sudo apt-get -y -t buster-backports install libseccomp2
+    sudo apt-get -y install podman
+  else
+    echo "Unknown distribution."
+    exit 1
   fi
-
-  # Add kubic libcontainers repo
-  kubic=/etc/apt/sources.list.d/kubic.list
-  if [[ ! -f $kubic ]]; then
-    echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' | \
-      sudo tee $kubic
-  fi
-
-  # Add kubic key
-  curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/Release.key | \
-    sudo apt-key add -
-
-  # update / install
-  sudo apt-get update
-  sudo apt-get -y -t buster-backports install libseccomp2
-  sudo apt-get -y install podman
-else
-  echo "Unknown distribution."
-  exit 1
 fi
 
 # Add wsl2 config on the user level
-if is_wsl; then
-  mkdir -p ~/.config/containers
-  cp "$__root"/etc/containers/containers.conf ~/.config/containers
+if $is_wsl; then
+  if [[ ! -f "$HOME/.config/containers/containers.conf" ]]; then
+    mkdir -p ~/.config/containers
+    ln -sf "${__root}/etc/containers/containers.conf" "$HOME/.config/containers/containers.conf"
+  fi
 fi
 
 # Add docker alias command

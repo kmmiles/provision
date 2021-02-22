@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+################################################################################
+# Installs various tools in $HOME
+################################################################################
+#shellcheck source=../common.profile
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+require_non_root
+
+pp_url="https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping"
+exa_url="https://github.com/ogham/exa/releases/download/v0.9.0/exa-linux-x86_64-0.9.0.zip"
+glow_url="https://github.com/charmbracelet/glow/releases/download/v1.0.2/glow_1.0.2_linux_x86_64.tar.gz"
+ale_url="https://github.com/dense-analysis/ale.git"
+gb_url="https://github.com/morhetz/gruvbox.git"
+yt_url="https://yt-dl.org/downloads/latest/youtube-dl"
+
+local_dir="$HOME/.local"
+bin_dir="$local_dir/bin"
+vim_dir="$HOME/.vim/pack/git-plugins/start"
+
+mkdir -p "$bin_dir" "$vim_dir"
+
+################################################################################
+# link some repo scripts
+################################################################################
+ln -sf "${__root}/common.profile" "${local_dir}/common.profile"
+for s in dl ytmp3; do
+  ln -sf "${__root}/bin/${s}" "${bin_dir}/${s}"
+done
+
+################################################################################
+# link dotfiles
+################################################################################
+dotfilesdir="$__root/dotfiles"
+pushd "$dotfilesdir" > /dev/null 2>&1
+find . -mindepth 1 -type f |
+  while read -r dotfile; do
+    rm -f "$HOME/$dotfile"
+    mkdir -p "$HOME/$(dirname "$dotfile")"
+    ln -sf "$dotfilesdir/$dotfile" "$HOME/$dotfile"
+  done
+popd > /dev/null 2>&1
+
+rm -f "$HOME/.bash_profile"
+ln -sf "$HOME/.bashrc" "$HOME/.bash_profile"
+
+################################################################################
+# prettyping
+################################################################################
+if [[ ! -f "$bin_dir/prettyping" ]]; then
+  install -D -v -m 755 -t "$bin_dir" "$(dl $pp_url)"
+fi
+
+################################################################################
+# exa
+################################################################################
+if [[ ! -f "$bin_dir/exa" ]]; then
+  unzip -qu "$(dl $exa_url)" -d "$DOWNLOADS"
+  mv -fv "$DOWNLOADS/exa-linux-x86_64" "$DOWNLOADS/exa"
+  install -D -v -m 755 -t "$bin_dir" "$DOWNLOADS/exa"
+fi
+
+################################################################################
+# glow
+################################################################################
+if [[ ! -f "$bin_dir"/glow ]]; then
+  tar xf "$(dl $glow_url)" -C "$DOWNLOADS" glow
+  install -D -v -m 755 -t "$bin_dir" "$DOWNLOADS/glow"
+fi
+
+################################################################################
+# youtube-dl
+################################################################################
+if [[ ! -f "$bin_dir"/youtube-dl ]]; then
+  install -D -v -m 755 -t "$bin_dir" "$(dl $yt_url)"
+fi
+
+################################################################################
+# vim plugins
+################################################################################
+for url in $ale_url $gb_url; do
+  if [[ ! -d "$vim_dir"/$(basename "$url" .git) ]]; then
+    git clone --depth 1 "$url" "$vim_dir/$(basename "$url" .git)"
+  fi
+done

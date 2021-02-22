@@ -5,20 +5,35 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
 require_non_root
 
 if chkpath ls bash; then
-  echo "Nice."
+  echo "chkpath: good"
 else
-  echo "Not nice."
+  echo "chkpath: bad"
 fi
 
 if chkpkg acl adduser; then
-  echo "Good packages"
+  echo "chkpkg: good"
 else
-  echo "ouch packages"
+  echo "chkpkg: bad"
 fi
 
 url=https://packages.microsoft.com/config/ubuntu/20.10/packages-microsoft-prod.deb
-if download $url; then
-  echo "Good download"
+if myfile=$(dl "$url"); then
+  echo "dl: good ($myfile)"
 else
-  echo "Ouch download"  
+  echo "dl: bad"  
 fi
+
+echo "test logs"
+
+log_msg "This is log_msg"
+log_err "This is logerr"
+log_warn "This is logwarn"
+log_info "This is loginfo"
+
+echo "magic vars"
+echo "__dir: $__dir"
+echo "__file: $__file"
+echo "__root: $__root"
+echo "is_wsl: $is_wsl"
+echo "is_debian: $is_debian"
+echo "is_ubuntu: $is_ubuntu"

@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+#shellcheck source=../common.profile
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+require_non_root
+
+usage() {
+  cat << EOF >&2
+Usage: $(basename "$0") <url>
+
+Downloads <url> and print absolute filepath on success
+
+By default downloads are stored in \$HOME/Downloads
+EOF
+}
+
+if ! chkpath "curl"; then
+  log_err "This program required \'curl\'."
+  exit 1
+fi
+
+url="${1:-}"
+if [[ -z "$url" ]]; then
+  usage
+  exit 1
+fi
+
+dl "$url"

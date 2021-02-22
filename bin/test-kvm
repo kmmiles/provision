@@ -40,7 +40,6 @@ vm_cpu_min="kvm64,\
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
 require_non_root
 require_wsl
-require_winhome
 
 downloads="$HOME/winhome/Downloads"
 if [ ! -d "$downloads" ]; then

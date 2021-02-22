@@ -5,12 +5,13 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
 require_non_root
 
 if ! chkpath clang cmake ponyc jq; then
-  logmsg "Installing base dev tools"
+  log_msg "Installing base dev tools"
   sudo apt --no-install-recommends -y install \
     build-essential \
     clang \
     manpages-dev \
     libncurses-dev \
+    python \
     bison \
     flex \
     libssl-dev \
@@ -19,13 +20,15 @@ if ! chkpath clang cmake ponyc jq; then
     jq
 fi
 
-if is_ubuntu; then
+if $is_ubuntu; then
   ###################
   # cmake
   ###################
   if ! chkpath cmake; then
-    logmsg "Installing cmake"
-    sudo apt -y --no-install-recommends install cmake cmake-doc
+    log_msg "Installing cmake"
+    sudo apt -y --no-install-recommends install \
+      cmake \
+      cmake-doc
   fi
 
   ###################
@@ -33,12 +36,12 @@ if is_ubuntu; then
   ###################
   PATH=$HOME/.local/share/ponyup/bin/:$PATH
   if ! chkpath ponyup; then
-    logmsg "Installing ponyup"
+    log_msg "Installing ponyup"
     sh -c "$(curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/ponylang/ponyup/latest-release/ponyup-init.sh)"
   fi
 
   if ! chkpath ponyc; then
-    logmsg "Installing ponyc"
+    log_msg "Installing ponyc"
     ponyup update ponyc release
   fi 
 
@@ -46,15 +49,15 @@ if is_ubuntu; then
   # dotnet
   ###################
   if ! chkpkg packages-microsoft-prod; then
-    logmsg "Installing microsoft repo"
+    log_msg "Installing microsoft repo"
     url=https://packages.microsoft.com/config/ubuntu/20.10/packages-microsoft-prod.deb
-    download "$url" && \
-      sudo dpkg -i "$DOWNLOADS/$(basename "$url")"
+    sudo dpkg -i "$(dl "$url")" 
   fi
 
   if ! chkpkg dotnet-sdk-5.0; then
-    logmsg "Installing dotnet sdk"
+    log_msg "Installing dotnet sdk"
     sudo apt-get update
-    sudo apt-get install -y dotnet-sdk-5.0
+    sudo apt -y install \
+      dotnet-sdk-5.0
   fi
 fi
