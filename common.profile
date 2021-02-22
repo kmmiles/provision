@@ -17,43 +17,55 @@ TEXT_NORMAL=$(tput sgr0)
 STATUS_MSG=
 LOGFILE=
 DOWNLOADS="$HOME/Downloads"
+SOURCE=
 
 ################################################################################
-# set options and expose magic variables for scripts sourcing this profile
+# export some variables:
 # 
-# __file  = absolute path of script
-# __dir   = absolute path of directory containing script
-# __root  = absolute path of parent directory containing script
+# __SOURCE  = "shell" or "script"
+# __FILE    = absolute path of script
+# __DIR     = absolute path of directory containing script
+# __ROOT    = absolute path of parent directory containing script
+#
+# IS_WSL    = true or false
+# IS_DEBIAN = true or false
+# IS_UBUNTU = true or false
 ################################################################################
 
 if [[ -n "${BASH_SOURCE[1]:-}" ]]; then
-  # sourced from script
+  __SOURCE="script"
+  __DIR="$(cd "$(dirname "${BASH_SOURCE[1]}")" && pwd)"
+  __FILE="${__DIR}/$(basename "${BASH_SOURCE[1]}")"
+  __ROOT="$(cd "$(dirname "${__DIR}")" && pwd)"
+else
+  __SOURCE="shell"
+  __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  __FILE="${__DIR}/$(basename "${BASH_SOURCE[0]}")"
+  __ROOT="${__DIR}"
+fi
+
+IS_UBUNTU=$(grep -q "ID=ubuntu" /etc/os-release && echo true || echo false)
+IS_DEBIAN=$(grep -q "ID=debian" /etc/os-release && echo true || echo false)
+IS_WSL=$(command -v "wslpath" > /dev/null 2>&1 && echo true || echo false)
+
+export \
+  __DIR \
+  __FILE \
+  __ROOT \
+  __SOURCE \
+  IS_UBUNTU \
+  IS_DEBIAN \
+  IS_WSL
+
+################################################################################
+# Set default options for scripts
+################################################################################
+
+if [[ "$__SOURCE" == "script" ]]; then
   set -o errexit
   set -o pipefail
   set -o nounset
-
-  __dir="$(cd "$(dirname "${BASH_SOURCE[1]}")" && pwd)"
-  __file="${__dir}/$(basename "${BASH_SOURCE[1]}")"
-  __root="$(cd "$(dirname "${__dir}")" && pwd)"
-else
-  # sourced from shell
-  __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  __file="${__dir}/$(basename "${BASH_SOURCE[0]}")"
-  __root="${__dir}"
 fi
-
-export __dir __file __root
-
-
-################################################################################
-# Some simple `is_x` exports.
-################################################################################
-
-is_ubuntu=$(grep -q "ID=ubuntu" /etc/os-release && echo true || echo false)
-is_debian=$(grep -q "ID=debian" /etc/os-release && echo true || echo false)
-is_wsl=$(command -v "wslpath" > /dev/null 2>&1 && echo true || echo false)
-
-export is_ubuntu is_debian is_wsl
 
 ################################################################################
 # Colored print commands
@@ -73,9 +85,9 @@ enable_logfile() {
   local logrel
 
   logrel="logs/$(basename "$0").log"
-  LOGFILE="${__root}/$logrel"
+  LOGFILE="${__ROOT}/$logrel"
 
-  mkdir -p "${__root}/logs"
+  mkdir -p "${__ROOT}/logs"
   rm -f "$LOGFILE"
   touch "$LOGFILE"
 }
@@ -84,35 +96,43 @@ enable_logfile() {
 # Generic log commands. Writes non-colored to $LOGFILE if set, else stdout.
 ################################################################################
 
+log_title() {
+  if [[ "$SOURCE" == "script" ]];  then
+    echo "[$(basename "$0")] "
+  else
+    echo ""
+  fi
+}
+
 log_msg() {
   if [[ "$LOGFILE" != "" ]]; then
-    msg "[$(basename "$0")] ${1}" >> "$LOGFILE"
+    msg "$(log_title)${1}" >> "$LOGFILE"
   else
-    msg "[$(basename "$0")] ${1}"
+    msg "$(log_title)${1}"
   fi
 }
 
 log_err() {
   if [[ "$LOGFILE" != "" ]]; then
-    msg "[$(basename "$0")] ${1}" >> "$LOGFILE"
+    msg "$(log_title)${1}" >> "$LOGFILE"
   else
-    >&2 red_msg "[$(basename "$0")] ${1}"
+    >&2 red_msg "$(log_title)${1}"
   fi
 }
 
 log_warn() {
   if [[ "$LOGFILE" != "" ]]; then
-    msg "[$(basename "$0")] ${1}" >> "$LOGFILE"
+    msg "$(log_title)${1}" >> "$LOGFILE"
   else
-    >&2 yellow_msg "[$(basename "$0")] ${1}"
+    >&2 yellow_msg "$(log_title)${1}"
   fi
 }
 
 log_info() {
   if [[ "$LOGFILE" != "" ]]; then
-    msg "[$(basename "$0")] ${1}" >> "$LOGFILE"
+    msg "$(log_title)${1}" >> "$LOGFILE"
   else
-    >&2 blue_msg "[$(basename "$0")] ${1}"
+    >&2 blue_msg "$(log_title)${1}"
   fi
 }
 
@@ -168,7 +188,7 @@ require_root() {
 }
 
 require_wsl() {
-  if ! $is_wsl; then
+  if ! $IS_WSL; then
     redmsg "ERROR: This script requires WSL2."
     return 1
   fi
@@ -260,7 +280,7 @@ get_win_user() {
 ################################################################################
 # "main"
 ################################################################################
-if $is_wsl; then
+if $IS_WSL; then
   path="$HOME/winhome"
 
   if [[ ! -L "$path" || ! -d "$path" ]]; then

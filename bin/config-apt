@@ -8,7 +8,7 @@
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
 require_non_root
 
-if $is_wsl; then
+if $IS_WSL; then
   apt_conf_dir="/etc/apt/apt.conf.d"
   cache_dir="$HOME/winhome/Downloads/apt"
 

@@ -22,15 +22,15 @@ mkdir -p "$bin_dir" "$vim_dir"
 ################################################################################
 # link some repo scripts
 ################################################################################
-ln -sf "${__root}/common.profile" "${local_dir}/common.profile"
+ln -sf "${__ROOT}/common.profile" "${local_dir}/common.profile"
 for s in dl ytmp3; do
-  ln -sf "${__root}/bin/${s}" "${bin_dir}/${s}"
+  ln -sf "${__ROOT}/bin/${s}" "${bin_dir}/${s}"
 done
 
 ################################################################################
 # link dotfiles
 ################################################################################
-dotfilesdir="$__root/dotfiles"
+dotfilesdir="${__ROOT}/dotfiles"
 pushd "$dotfilesdir" > /dev/null 2>&1
 find . -mindepth 1 -type f |
   while read -r dotfile; do

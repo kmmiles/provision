@@ -5,9 +5,9 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
 require_non_root
 require_wsl
 
-bzsrc="${__root}/kernelbuild/arch/x86/boot/bzImage"
+bzsrc="${__ROOT}/kernelbuild/arch/x86/boot/bzImage"
 bzdest="$HOME/winhome/wsl2-kernel-$(date "+%s")"
-wslconfigsrc="${__root}/etc/.wslconfig" 
+wslconfigsrc="${__ROOT}/etc/.wslconfig" 
 wslconfigdest="$HOME/winhome/.wslconfig"
 
 status_msg "Checking for compiled kernel..."
@@ -25,7 +25,7 @@ cp "$bzsrc" "$bzdest"
 status_ok
 
 status_msg "Installing kernel modules..."
-(cd "${__root}/kernelbuild" && sudo make modules_install > /dev/null 2>&1)
+(cd "${__ROOT}/kernelbuild" && sudo make modules_install > /dev/null 2>&1)
 status_ok
 
 status_msg "Copying wslconfig to $wslconfigdest..."

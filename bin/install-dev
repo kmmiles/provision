@@ -20,7 +20,7 @@ if ! chkpath clang cmake ponyc jq; then
     jq
 fi
 
-if $is_ubuntu; then
+if $IS_UBUNTU; then
   ###################
   # cmake
   ###################

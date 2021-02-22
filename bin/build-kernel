@@ -7,9 +7,9 @@ require_wsl
 
 #kernel_url="https://github.com/microsoft/WSL2-Linux-Kernel/archive/4.19.128-microsoft-standard.tar.gz"
 kernel_url=https://github.com/microsoft/WSL2-Linux-Kernel/archive/linux-msft-5.4.83.tar.gz
-kernel_config="${__root}/etc/config-kernel-latest"
+kernel_config="${__ROOT}/etc/config-kernel-latest"
 kernel_tar="$HOME/winhome/Downloads/$(basename $kernel_url)"
-kernel_builddir="${__root}/kernelbuild"
+kernel_builddir="${__ROOT}/kernelbuild"
 
 # Ensure the kernel source is extracted to $KERNEL_BUILDDIR
 if [ ! -d "$kernel_builddir" ]; then
