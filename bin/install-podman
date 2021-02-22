@@ -4,7 +4,7 @@
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
 require_non_root
 
-if ! chkpath podman docker; then
+if ! chkpath podman; then
   if $is_ubuntu; then
     . /etc/os-release
     echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
@@ -50,7 +50,7 @@ if $is_wsl; then
 fi
 
 # Add docker alias command
-if ! in_path docker; then
+if ! chkpath docker; then
   mkdir -p "$HOME/.local/bin"
   cat << EOF > "$HOME/.local/bin/docker"
 #!/bin/sh

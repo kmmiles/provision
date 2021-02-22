@@ -9,4 +9,8 @@ set backspace=2
 set modeline
 let g:is_bash = 1
 
-autocmd vimenter * ++nested colorscheme gruvbox
+if has('nvim')
+  autocmd vimenter * ++nested colorscheme gruvbox
+else
+  colorscheme elflord
+endif

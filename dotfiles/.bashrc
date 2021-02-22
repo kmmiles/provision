@@ -85,6 +85,7 @@ if command -v prettyping > /dev/null 2>&1; then
 fi
 alias apt-provides='dpkg -S'
 alias less='less -R'
+alias vim='nvim'
 
 # x11 for wsl2 
 if command -v wslpath > /dev/null 2>&1; then

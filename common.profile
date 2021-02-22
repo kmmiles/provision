@@ -266,7 +266,7 @@ if $is_wsl; then
   if [[ ! -L "$path" || ! -d "$path" ]]; then
     echo "Creating winhome link in $HOME/winhome..."
     win_drive="$(basename "$(grep drvfs /proc/self/mounts | head -n 1 | cut -d' ' -f 2)")"
-    win_user="$(get_default_win_user "$win_drive")"
+    win_user="$(get_win_user "$win_drive")"
     win_home="/mnt/$win_drive/Users/$win_user"
     if [ -d "$win_home" ]; then
       ln -vsf "$win_home" "$HOME/winhome"

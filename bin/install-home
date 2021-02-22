@@ -63,7 +63,7 @@ fi
 # glow
 ################################################################################
 if [[ ! -f "$bin_dir"/glow ]]; then
-  tar xf "$(dl $glow_url)" -C "$DOWNLOADS" glow
+  tar xmzf "$(dl $glow_url)" -C "$DOWNLOADS" glow
   install -D -v -m 755 -t "$bin_dir" "$DOWNLOADS/glow"
 fi
 
