@@ -2,7 +2,17 @@
 
 provision and install dotfiles for ubuntu and debian
 
-## workstation
+## ubuntu workstation
+
+```bash
+set -eux; \
+  cd ~ && \
+  git clone https://github.com/kmmiles/provision.git && \
+  cd provision && \
+  ./bin/workstation
+```
+
+## debian workstation
 
 ```bash
 set -eux; \
