@@ -1,6 +1,6 @@
 # provision
 
-provision scrits and dotfiles for ubuntu and debian
+provision scripts and dotfiles for ubuntu and debian
 
 ## about
 
