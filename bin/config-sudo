@@ -20,7 +20,7 @@ else
 fi
 
 # add sudoers config file
-if [ ! -f "$sudoers_file" ]; then
+if [[ ! -f "$sudoers_file" ]]; then
   log_msg "Creating new file: \"$sudoers_file\""
   echo '%sudo ALL=(ALL) NOPASSWD:ALL' | sudo tee "$sudoers_file" > /dev/null
 else

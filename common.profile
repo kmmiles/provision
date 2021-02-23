@@ -169,19 +169,19 @@ status_fail() {
 ################################################################################
 
 require_non_root() {
-  if [ "$(id -u)" == "0" ]; then
+  if [[ "$(id -u)" == "0" ]]; then
     redmsg "ERROR: Do not run this script as root."
     return 1
   fi
 }
 
 require_root() {
-  if [ "$(id -u)" != "0" ]; then
+  if [[ "$(id -u)" != "0" ]]; then
     redmsg "ERROR: please run as normal user w/ sudo"
     return 1
   fi
 
-  if [ -z "$SUDO_USER" ]; then
+  if [[ -z "$SUDO_USER" ]]; then
     redmsg "ERROR: please run as normal user w/ sudo"
     return 1
   fi

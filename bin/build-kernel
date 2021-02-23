@@ -12,9 +12,9 @@ kernel_tar="$HOME/winhome/Downloads/$(basename $kernel_url)"
 kernel_builddir="${__ROOT}/kernelbuild"
 
 # Ensure the kernel source is extracted to $KERNEL_BUILDDIR
-if [ ! -d "$kernel_builddir" ]; then
+if [[ ! -d "$kernel_builddir" ]]; then
   # download kernel tarball if necessary
-  if [ ! -f "$kernel_tar" ]; then
+  if [[ ! -f "$kernel_tar" ]]; then
     log_msg "Downloading: $kernel_url -> $kernel_tar"
     curl -L "$kernel_url" -o "$kernel_tar"
   fi

@@ -6,13 +6,9 @@ require_non_root
 require_wsl
 
 wslconfig="$HOME/winhome/.wslconfig"
-if [ ! -f "$wslconfig" ]; then
-  echo "Nothing to do."
-  exit 0
+if [[ -f "$wslconfig" ]]; then
+  filename=".wslconfig-$(date "+%s")"
+  wslconfig_new="$HOME/winhome/$filename"
+  log_msg "Renaming .wslconfig to $filename"
+  mv -f "$wslconfig" "$wslconfig_new"
 fi
-
-filename=".wslconfig-$(date "+%s")"
-wslconfig_new="$HOME/winhome/$filename"
-status_msg "Renaming .wslconfig to $filename..."
-mv -f "$wslconfig" "$wslconfig_new"
-status_ok

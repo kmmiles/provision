@@ -42,13 +42,13 @@ require_non_root
 require_wsl
 
 downloads="$HOME/winhome/Downloads"
-if [ ! -d "$downloads" ]; then
+if [[ ! -d "$downloads" ]]; then
   echo "No such directory: $downloads"
   exit 1
 fi
 
 iso_file="$downloads/$(basename $iso_url)"
-if [ ! -f "$iso_file" ]; then
+if [[ ! -f "$iso_file" ]]; then
   (cd "$downloads" && curl -LO $iso_url)
 fi
 

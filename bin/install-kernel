@@ -11,7 +11,7 @@ wslconfigsrc="${__ROOT}/etc/.wslconfig"
 wslconfigdest="$HOME/winhome/.wslconfig"
 
 status_msg "Checking for compiled kernel..."
-if [ ! -f "$bzsrc" ]; then
+if [[ ! -f "$bzsrc" ]]; then
   status_fail
   echo "No such file: $bzsrc"
   echo ""
