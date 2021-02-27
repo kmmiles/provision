@@ -17,42 +17,6 @@ yellow_msg()  { printf "%s\n" "${TEXT_BOLD}${TEXT_YELLOW}${1}${TEXT_NORMAL}" ; }
 blue_msg()    { printf "%s\n" "${TEXT_BOLD}${TEXT_BLUE}${1}${TEXT_NORMAL}" ; }
 
 ################################################################################
-# Sets log* functions to write to a file instead of stdout/stderr
-#
-# Globals:
-#   __LOGFILE
-# Arguments:
-#   None
-################################################################################
-log_use_file() {
-  local logrel
-
-  logrel="logs/$(basename "$0").log"
-  __LOGFILE="${__ROOT}/$logrel"
-
-  mkdir -p "${__ROOT}/logs"
-  rm -f "$__LOGFILE"
-  touch "$__LOGFILE"
-}
-
-################################################################################
-# Print prefix string of log messages (program named wrapped in brackets).
-# Globals:
-#   SOURCE
-# Arguments:
-#   None
-# Outputs:
-#   Prefix string or empty if not a script    
-################################################################################
-log_get_title() {
-  if [[ "$__SOURCE" == "script" ]];  then
-    echo "[$(basename "$0")] "
-  else
-    echo ""
-  fi
-}
-
-################################################################################
 # Print plain message to stdout (or __LOGFILE)
 # Globals:
 #   __LOGFILE
@@ -109,6 +73,42 @@ log_info() {
     msg "$(log_get_title)${1}" >> "$__LOGFILE"
   else
     >&2 blue_msg "$(log_get_title)${1}"
+  fi
+}
+
+################################################################################
+# Sets log* functions to write to a file instead of stdout/stderr
+#
+# Globals:
+#   __LOGFILE
+# Arguments:
+#   None
+################################################################################
+log_use_file() {
+  local logrel
+
+  logrel="logs/$(basename "$0").log"
+  __LOGFILE="${__ROOT}/$logrel"
+
+  mkdir -p "${__ROOT}/logs"
+  rm -f "$__LOGFILE"
+  touch "$__LOGFILE"
+}
+
+################################################################################
+# Print prefix string of log messages (program named wrapped in brackets).
+# Globals:
+#   SOURCE
+# Arguments:
+#   None
+# Outputs:
+#   Prefix string or empty if not a script    
+################################################################################
+log_get_title() {
+  if [[ "$__SOURCE" == "script" ]];  then
+    echo "[$(basename "$0")] "
+  else
+    echo ""
   fi
 }
 
@@ -330,6 +330,20 @@ IS_DEBIAN=$(grep -q "ID=debian" /etc/os-release && echo true || echo false)
 IS_WSL=$(command -v "wslpath" > /dev/null 2>&1 && echo true || echo false)
 export IS_UBUNTU IS_DEBIAN IS_WSL
 
+if [[ "$__SOURCE" == "script" ]]; then
+  set -o errexit
+  set -o pipefail
+  set -o nounset
+fi
+
+
+if [[ "${DEBUG:-}" ]]; then
+  echo "*** Debug mode enabled ***"
+  set -o xtrace
+else
+  set +o xtrace
+fi
+
 # TODO: main function
 if $IS_WSL; then
   path="$HOME/winhome"
@@ -349,19 +363,5 @@ if $IS_WSL; then
       fi
     done
   fi
-fi
-
-if [[ "$__SOURCE" == "script" ]]; then
-  set -o errexit
-  set -o pipefail
-  set -o nounset
-fi
-
-
-if [[ "${DEBUG:-}" ]]; then
-  echo "*** Debug mode enabled ***"
-  set -o xtrace
-else
-  set +o xtrace
 fi
 
