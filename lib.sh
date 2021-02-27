@@ -3,89 +3,6 @@
 # library of common things used by scripts 
 
 ################################################################################
-# Set and export global variables
-#
-# Globals:
-#   TEXT_BOLD, TEXT_RED, TEXT_GREEN, TEXT_YELLOW, TEXT_BLUE, TEXT_NORMAL,
-#   __STATUS_MSG, __LOGFILE, __SOURCE, __DIR, __FILE, __ROOT,
-#   DOWNLOADS, IS_UBUNTU, IS_DEBIAN, IS_WSL
-# Arguments:
-#   None
-################################################################################
-export_globals() {
-  # message that is set/used by status_* functions
-  __STATUS_MSG=
-  export __STATUS_MSG
-
-  # log_* functions write to LOGFILE if set (instead of stdout/err)
-  __LOGFILE=
-  export __LOGFILE
-
-  # determine and export:
-  #
-  #   __SOURCE: Who sourced this library? "script" or "shell".
-  #   __DIR: Directory of the script that sourced this library. 
-  #   __FILE: Filename of the script that sourced this library.
-  #   __ROOT: Parent directory of the script that sourced this library.
-  if [[ -n "${BASH_SOURCE[1]:-}" ]]; then
-    __SOURCE="script"
-    __DIR="$(cd "$(dirname "${BASH_SOURCE[1]}")" && pwd)"
-    __FILE="${__DIR}/$(basename "${BASH_SOURCE[1]}")"
-    __ROOT="$(cd "$(dirname "${__DIR}")" && pwd)"
-  else
-    __SOURCE="shell"
-    __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    __FILE="${__DIR}/$(basename "${BASH_SOURCE[0]}")"
-    __ROOT="${__DIR}"
-  fi
-  export __DIR __FILE __ROOT __SOURCE
-
-  # basic text colors
-  TEXT_BOLD=$(tput bold)
-  TEXT_RED=$(tput setaf 1)
-  TEXT_GREEN=$(tput setaf 2)
-  TEXT_YELLOW=$(tput setaf 3)
-  TEXT_BLUE=$(tput setaf 4)
-  TEXT_NORMAL=$(tput sgr0)
-  export TEXT_BOLD TEXT_RED TEXT_GREEN TEXT_YELLOW TEXT_BLUE TEXT_NORMAL
-
-  # files downloaded with `dl()` are stored here
-  DOWNLOADS="$HOME/Downloads"
-  export DOWNLOADS
-
-  # determine some info about the platform
-  IS_UBUNTU=$(grep -q "ID=ubuntu" /etc/os-release && echo true || echo false)
-  IS_DEBIAN=$(grep -q "ID=debian" /etc/os-release && echo true || echo false)
-  IS_WSL=$(command -v "wslpath" > /dev/null 2>&1 && echo true || echo false)
-  export IS_UBUNTU IS_DEBIAN IS_WSL
-}
-
-################################################################################
-# Set script options
-#
-# Globals:
-#   __SOURCE
-#   DEBUG
-# Arguments:
-#   None
-################################################################################
-set_options() {
-  if [[ "$__SOURCE" == "script" ]]; then
-    set -o errexit
-    set -o pipefail
-    set -o nounset
-  fi
-
-
-  if [[ "${DEBUG:-}" ]]; then
-    echo "*** Debug mode enabled ***"
-    set -o xtrace
-  else
-    set +o xtrace
-  fi
-}
-
-################################################################################
 # Functions to print a message in various colors
 #
 # Globals:
@@ -103,7 +20,7 @@ blue_msg()    { printf "%s\n" "${TEXT_BOLD}${TEXT_BLUE}${1}${TEXT_NORMAL}" ; }
 # Sets log* functions to write to a file instead of stdout/stderr
 #
 # Globals:
-#   LOGFILE
+#   __LOGFILE
 # Arguments:
 #   None
 ################################################################################
@@ -111,11 +28,11 @@ log_use_file() {
   local logrel
 
   logrel="logs/$(basename "$0").log"
-  LOGFILE="${__ROOT}/$logrel"
+  __LOGFILE="${__ROOT}/$logrel"
 
   mkdir -p "${__ROOT}/logs"
-  rm -f "$LOGFILE"
-  touch "$LOGFILE"
+  rm -f "$__LOGFILE"
+  touch "$__LOGFILE"
 }
 
 ################################################################################
@@ -136,60 +53,60 @@ log_get_title() {
 }
 
 ################################################################################
-# Print plain message to stdout (or LOGFILE)
+# Print plain message to stdout (or __LOGFILE)
 # Globals:
-#   LOGFILE
+#   __LOGFILE
 # Arguments:
 #   The message
 ################################################################################
 log_msg() {
-  if [[ "$LOGFILE" != "" ]]; then
-    msg "$(log_get_title)${1}" >> "$LOGFILE"
+  if [[ "$__LOGFILE" != "" ]]; then
+    msg "$(log_get_title)${1}" >> "$__LOGFILE"
   else
     msg "$(log_get_title)${1}"
   fi
 }
 
 ################################################################################
-# Print red error message to stderr (or LOGFILE)
+# Print red error message to stderr (or __LOGFILE)
 # Globals:
-#   LOGFILE
+#   __LOGFILE
 # Arguments:
 #   The message
 ################################################################################
 log_err() {
-  if [[ "$LOGFILE" != "" ]]; then
-    msg "$(log_get_title)${1}" >> "$LOGFILE"
+  if [[ "$__LOGFILE" != "" ]]; then
+    msg "$(log_get_title)${1}" >> "$__LOGFILE"
   else
     >&2 red_msg "$(log_get_title)${1}"
   fi
 }
 
 ################################################################################
-# Print yellow warning message to stderr (or LOGFILE)
+# Print yellow warning message to stderr (or __LOGFILE)
 # Globals:
-#   LOGFILE
+#   __LOGFILE
 # Arguments:
 #   The message
 ################################################################################
 log_warn() {
-  if [[ "$LOGFILE" != "" ]]; then
-    msg "$(log_get_title)${1}" >> "$LOGFILE"
+  if [[ "$__LOGFILE" != "" ]]; then
+    msg "$(log_get_title)${1}" >> "$__LOGFILE"
   else
     >&2 yellow_msg "$(log_get_title)${1}"
   fi
 }
 
 ################################################################################
-# Print blue info message to stderr (or LOGFILE)
+# Print blue info message to stderr (or __LOGFILE)
 # Globals:
-#   LOGFILE
+#   __LOGFILE
 # Arguments:
 #   The message
 ################################################################################
 log_info() {
-  if [[ "$LOGFILE" != "" ]]; then
-    msg "$(log_get_title)${1}" >> "$LOGFILE"
+  if [[ "$__LOGFILE" != "" ]]; then
+    msg "$(log_get_title)${1}" >> "$__LOGFILE"
   else
     >&2 blue_msg "$(log_get_title)${1}"
   fi
@@ -367,11 +284,24 @@ get_win_user() {
 ################################################################################
 # "main"
 ################################################################################
+# basic text colors
+TEXT_BOLD=$(tput bold)
+TEXT_RED=$(tput setaf 1)
+TEXT_GREEN=$(tput setaf 2)
+TEXT_YELLOW=$(tput setaf 3)
+TEXT_BLUE=$(tput setaf 4)
+TEXT_NORMAL=$(tput sgr0)
+export TEXT_BOLD TEXT_RED TEXT_GREEN TEXT_YELLOW TEXT_BLUE TEXT_NORMAL
+
+# files downloaded with `dl()` are stored here
+DOWNLOADS="$HOME/Downloads"
+export DOWNLOADS
+
 # message that is set/used by status_* functions
 __STATUS_MSG=
 export __STATUS_MSG
 
-# log_* functions write to LOGFILE if set (instead of stdout/err)
+# log_* functions write to __LOGFILE if set (instead of stdout/err)
 __LOGFILE=
 export __LOGFILE
 
@@ -393,19 +323,6 @@ else
   __ROOT="${__DIR}"
 fi
 export __DIR __FILE __ROOT __SOURCE
-
-# basic text colors
-TEXT_BOLD=$(tput bold)
-TEXT_RED=$(tput setaf 1)
-TEXT_GREEN=$(tput setaf 2)
-TEXT_YELLOW=$(tput setaf 3)
-TEXT_BLUE=$(tput setaf 4)
-TEXT_NORMAL=$(tput sgr0)
-export TEXT_BOLD TEXT_RED TEXT_GREEN TEXT_YELLOW TEXT_BLUE TEXT_NORMAL
-
-# files downloaded with `dl()` are stored here
-DOWNLOADS="$HOME/Downloads"
-export DOWNLOADS
 
 # determine some info about the platform
 IS_UBUNTU=$(grep -q "ID=ubuntu" /etc/os-release && echo true || echo false)
@@ -433,3 +350,18 @@ if $IS_WSL; then
     done
   fi
 fi
+
+if [[ "$__SOURCE" == "script" ]]; then
+  set -o errexit
+  set -o pipefail
+  set -o nounset
+fi
+
+
+if [[ "${DEBUG:-}" ]]; then
+  echo "*** Debug mode enabled ***"
+  set -o xtrace
+else
+  set +o xtrace
+fi
+

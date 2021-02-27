@@ -19,7 +19,7 @@ scripts=(
 
 for script in "${scripts[@]}"; do
   status_msg "Running $script..."
-  if ! "${__ROOT}/bin/${script}" >> "$LOGFILE" 2>&1; then
+  if ! "${__ROOT}/bin/${script}" >> "$__LOGFILE" 2>&1; then
     status_fail
     exit 1
   else
