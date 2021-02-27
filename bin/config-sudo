@@ -1,10 +1,10 @@
-#!/usr/bin/env bash
+#!/bin/bash
 ################################################################################
 # Quick and dirty script to prevent `sudo` from asking for a password.
 ################################################################################
 
-#shellcheck source=../common.profile
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+#shellcheck source=../lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
 require_non_root
 
 sudoers_group="sudo"

@@ -1,11 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/bash
 ################################################################################
 # Configures apt to cache downloads in the Windows `Downloads` directory.
 # This prevents re-downloading the same packages across WSL2 distributions.
 ################################################################################
 
-#shellcheck source=../common.profile
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+#shellcheck source=../lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
 require_non_root
 
 if $IS_WSL; then

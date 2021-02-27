@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 ################################################################################
 iso_url="http://tinycorelinux.net/10.x/x86/release/TinyCore-current.iso"
 vm_mem="512"
@@ -36,8 +36,8 @@ vm_cpu_min="kvm64,\
 +clflushopt,+xsaveopt,+xsavec,+xgetbv1,+xsaves"
 
 ################################################################################
-#shellcheck source=../common.profile
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+#shellcheck source=../lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
 require_non_root
 require_wsl
 

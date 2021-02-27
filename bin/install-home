@@ -1,9 +1,9 @@
-#!/usr/bin/env bash
+#!/bin/bash
 ################################################################################
 # Installs various tools in $HOME
 ################################################################################
-#shellcheck source=../common.profile
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/common.profile"
+#shellcheck source=../lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
 require_non_root
 
 pp_url="https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping"
@@ -22,7 +22,7 @@ mkdir -p "$bin_dir" "$vim_dir"
 ################################################################################
 # link some repo scripts
 ################################################################################
-ln -sf "${__ROOT}/common.profile" "${local_dir}/common.profile"
+ln -sf "${__ROOT}/lib.sh" "${local_dir}/lib.sh"
 for s in dl ytmp3; do
   ln -sf "${__ROOT}/bin/${s}" "${bin_dir}/${s}"
 done
