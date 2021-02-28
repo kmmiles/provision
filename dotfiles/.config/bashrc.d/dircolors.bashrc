@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 if [[ -x /usr/bin/dircolors ]]; then
   if [[ -f "$HOME"/.dircolors ]]; then

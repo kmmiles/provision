@@ -169,9 +169,12 @@ status_msglen() {
 }
 
 ################################################################################
-# require_ functions to be placed at top of scripts
+# Require a script to be run as a non-root user
+# Outputs:
+#   Error message to stderr, if applicable
+# Returns:
+#   1 on error
 ################################################################################
-
 require_non_root() {
   if [[ "$(id -u)" == "0" ]]; then
     redmsg "ERROR: Do not run this script as root."
@@ -179,6 +182,15 @@ require_non_root() {
   fi
 }
 
+################################################################################
+# Require a script to be run as the root user
+# Globals:
+#   SUDO_USER
+# Outputs:
+#   Error message to stderr, if applicable
+# Returns:
+#   1 on error
+################################################################################
 require_root() {
   if [[ "$(id -u)" != "0" ]]; then
     redmsg "ERROR: please run as normal user w/ sudo"
@@ -191,6 +203,15 @@ require_root() {
   fi
 }
 
+################################################################################
+# Require WSL2 to run a script
+# Globals:
+#   IS_WSL 
+# Outputs:
+#   Error message to stderr, if applicable
+# Returns:
+#   1 on error
+################################################################################
 require_wsl() {
   if ! $IS_WSL; then
     redmsg "ERROR: This script requires WSL2."
@@ -199,9 +220,12 @@ require_wsl() {
 }
 
 ################################################################################
-# chkpath: verify all bins passed are in $PATH
+# Check for programs in PATH
+# Arguments:
+#   Variable number of program names
+# Returns:
+#   1 if any programs are not in PATH
 ################################################################################
-
 chkpath() {
   # no programs specified
   if [[ $# -eq 0 ]]; then
@@ -214,9 +238,12 @@ chkpath() {
 }
 
 ################################################################################
-# chkpkg: verify all packages passed are installed
+# Check for installed packages
+# Arguments:
+#   Variable number of package names
+# Returns:
+#   1 if packages are not installed
 ################################################################################
-
 chkpkg() {
   # no packages specified
   if [[ $# -eq 0 ]]; then
@@ -229,9 +256,14 @@ chkpkg() {
 }
 
 ################################################################################
-# dl: Downloads url passed and prints the local path when succesful
+# Downloads url
+# Arguments:
+#   The URL
+# Outputs:
+#   Absolute path of downloaded file on success
+# Returns:
+#   1 on error
 ################################################################################
-
 dl() {
   local url filepath filename
 
@@ -264,6 +296,10 @@ dl() {
 
 ################################################################################
 # get the windows username (only applies to WSL2)
+# Arguments:
+#   Letter of primary windows drive (e.g. "c")
+# Outputs:
+#   username
 ################################################################################
 get_win_user() {
   local win_drive="$1"
@@ -281,9 +317,6 @@ get_win_user() {
     done
 }
 
-################################################################################
-# "main"
-################################################################################
 # basic text colors
 TEXT_BOLD=$(tput bold)
 TEXT_RED=$(tput setaf 1)

@@ -1,0 +1,34 @@
+#!/bin/bash
+
+isnum() { [[ "$1" =~ ^[0-9]+$ ]]; }
+
+usage() {
+  cat << EOF >&2
+Usage: $(basename "$0") [OPTIONS]
+
+Generate password
+
+OPTIONS
+
+-l  <length>  password length
+-s            allow special chars 
+EOF
+}
+
+regex="a-zA-Z0-9"
+length=32
+special=false
+
+while getopts 'l:s' flag; do
+  case "${flag}" in
+    s) special=true ;;
+    l) length="${OPTARG}" ;;
+    *) usage ; exit 1 ;; 
+  esac
+done
+
+if $special; then
+  regex="${regex}!@#$%^&;:"
+fi
+
+tr -dc "$regex" < /dev/urandom | fold -w "$length" | head -n 1
