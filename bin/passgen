@@ -17,18 +17,13 @@ EOF
 
 regex="a-zA-Z0-9"
 length=32
-special=false
 
 while getopts 'l:s' flag; do
   case "${flag}" in
-    s) special=true ;;
+    s) regex="${regex}!@#$%^&;:" ;;
     l) length="${OPTARG}" ;;
     *) usage ; exit 1 ;; 
   esac
 done
-
-if $special; then
-  regex="${regex}!@#$%^&;:"
-fi
 
 tr -dc "$regex" < /dev/urandom | fold -w "$length" | head -n 1

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#shellcheck source=../lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
+require_non_root
+
+url="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+if $IS_GUI && ! $IS_WSL; then
+  if ! chkpath "code"; then
+    sudo dpkg -i "$(dl "$url")"
+  fi
+fi

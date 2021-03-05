@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#shellcheck source=../lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
+require_non_root
+
+if $IS_UBUNTU && chkpkg "snapd"; then
+  log_msg "Removing snapd..."
+  sudo rm -rf /var/cache/snapd/
+  sudo apt autoremove --purge snapd gnome-software-plugin-snap
+  rm -fr ~/snap
+fi
+
+

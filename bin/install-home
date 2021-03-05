@@ -23,7 +23,7 @@ mkdir -p "$bin_dir" "$vim_dir"
 # link some repo scripts
 ################################################################################
 ln -sf "${__ROOT}/lib.sh" "${local_dir}/lib.sh"
-for s in dl ytmp3 passgen woc; do
+for s in dl ytmp3 passgen woc ghclone; do
   ln -sf "${__ROOT}/bin/${s}" "${bin_dir}/${s}"
 done
 

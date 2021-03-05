@@ -1,0 +1,49 @@
+#!/bin/bash
+
+dest_dir="$HOME/Code"
+owner_default="$(id -un)"
+
+usage() {
+  cat << EOF >&2
+Usage: $(basename "$0") <repo>
+
+Clones github <repo> to "$dest_dir". <repo> is in the form of [owner/]<name>
+
+- If [owner] is not specified the current user ("$owner_default") will be used.
+
+- If [owner] is not "$owner_default" clone will be shallow.
+
+EXAMPLES:
+
+ghclone bad-code
+ghclone morhetz/gruvbox
+
+EOF
+}
+
+shallow=true
+
+repo="${1:-}"
+if [[ -z "$repo" ]]; then
+  usage
+  exit 1
+fi
+
+name="$(basename "$repo" .git).git"
+owner="$(dirname "$repo")"
+if [[ "$owner" == "." ]]; then
+  owner="$owner_default"
+fi
+url="https://github.com/$owner/$name"
+
+if [[ "$owner" == "$owner_default" ]]; then
+  shallow=false
+fi
+
+cmdstr="git clone"
+if $shallow; then
+  cmdstr="$cmdstr --depth 1"
+fi
+cmdstr="$cmdstr $url $dest_dir/$(basename "$url" .git)"
+mkdir -p "$dest_dir"
+eval "$cmdstr"

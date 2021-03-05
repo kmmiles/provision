@@ -38,3 +38,5 @@ echo "__ROOT: $__ROOT"
 echo "IS_WSL: $IS_WSL"
 echo "IS_DEBIAN: $IS_DEBIAN"
 echo "IS_UBUNTU: $IS_UBUNTU"
+echo "IS_GUI: $IS_GUI"
+

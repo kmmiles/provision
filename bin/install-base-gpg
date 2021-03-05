@@ -1,0 +1,20 @@
+#shellcheck source=../lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
+require_non_root
+
+log_msg "Installing gpg packages"
+sudo apt --no-install-recommends -y install \
+  dirmngr \
+  gnupg \
+  gnupg-l10n \
+  gnupg-utils \
+  gpg \
+  gpg-agent \
+  gpg-wks-client \
+  gpg-wks-server \
+  gpgconf \
+  gpgsm \
+  libassuan0 \
+  libksba8 \
+  libnpth0 \
+  pinentry-curses
