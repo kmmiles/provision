@@ -4,9 +4,7 @@
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
 require_non_root
 
-url="https://github.com/flutter/flutter.git"
-path=$HOME/$(basename "$url" .git)
-if [[ ! -d "$path" ]]; then
+if ! chkpath flutter; then
   sudo apt --no-install-recommends -y install \
     build-essential \
     bash \
@@ -17,6 +15,7 @@ if [[ ! -d "$path" ]]; then
     xz-utils \
     libglu1-mesa
 
-  git clone --depth 1 "$url" "$path"
-  "$path"/bin/flutter precache
+  flutter_dir="$("$__ROOT"/bin/ghclone -s flutter/flutter)"
+  "$flutter_dir"/bin/flutter precache
+
 fi

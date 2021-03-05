@@ -1,17 +1,24 @@
 #!/bin/bash
 
-dest_dir="$HOME/Code"
+#shellcheck source=../lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
+require_non_root
+
+dest_basedir="$HOME/Code"
 owner_default="$(id -un)"
+shallow=false
 
 usage() {
   cat << EOF >&2
 Usage: $(basename "$0") <repo>
 
-Clones github <repo> to "$dest_dir". <repo> is in the form of [owner/]<name>
+Clones <repo> to "$dest_basedir" if it doesn't exist then prints the location.
 
-- If [owner] is not specified the current user ("$owner_default") will be used.
+<repo> is [owner/]<name>. If owner is not specified, "$owner_default" will be used.
 
-- If [owner] is not "$owner_default" clone will be shallow.
+OPTIONS:
+
+  -s    Shallow clone
 
 EXAMPLES:
 
@@ -21,7 +28,13 @@ ghclone morhetz/gruvbox
 EOF
 }
 
-shallow=true
+while getopts 's' flag; do
+  case "${flag}" in
+    s) shallow=true ;;
+    *) usage ; exit 1 ;; 
+  esac
+done
+shift $((OPTIND-1))
 
 repo="${1:-}"
 if [[ -z "$repo" ]]; then
@@ -35,15 +48,21 @@ if [[ "$owner" == "." ]]; then
   owner="$owner_default"
 fi
 url="https://github.com/$owner/$name"
-
-if [[ "$owner" == "$owner_default" ]]; then
-  shallow=false
-fi
+dest_dir="$dest_basedir/$(basename "$url" .git)"
 
 cmdstr="git clone"
 if $shallow; then
   cmdstr="$cmdstr --depth 1"
 fi
-cmdstr="$cmdstr $url $dest_dir/$(basename "$url" .git)"
-mkdir -p "$dest_dir"
-eval "$cmdstr"
+cmdstr="$cmdstr $url $dest_dir"
+
+if [[ ! -d "$dest_dir" ]]; then
+  mkdir -p "$dest_basedir"
+  log_info "Cloning $url to $dest_dir..."
+  if ! eval "$cmdstr" > /dev/null; then
+    log_err "command failed: $cmdstr"
+    exit 1
+  fi
+fi
+
+echo "$dest_dir"

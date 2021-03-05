@@ -150,6 +150,10 @@ status_fail() {
   local len
   len=$(status_msglen)
   printf "%${len}s\\n" "[${TEXT_BOLD}${TEXT_RED}FAIL${TEXT_NORMAL}]"
+
+  if [[ -n "$__LOGFILE" ]]; then
+    2>&1 red_msg "Check logfile for details: $(relpath "$__LOGFILE")"
+  fi
 }
 
 ################################################################################
@@ -177,7 +181,7 @@ status_msglen() {
 ################################################################################
 require_non_root() {
   if [[ "$(id -u)" == "0" ]]; then
-    redmsg "ERROR: Do not run this script as root."
+    red_msg "ERROR: Do not run this script as root."
     return 1
   fi
 }
@@ -193,12 +197,12 @@ require_non_root() {
 ################################################################################
 require_root() {
   if [[ "$(id -u)" != "0" ]]; then
-    redmsg "ERROR: please run as normal user w/ sudo"
+    red_msg "ERROR: please run as normal user w/ sudo"
     return 1
   fi
 
   if [[ -z "$SUDO_USER" ]]; then
-    redmsg "ERROR: please run as normal user w/ sudo"
+    red_msg "ERROR: please run as normal user w/ sudo"
     return 1
   fi
 }
@@ -214,7 +218,7 @@ require_root() {
 ################################################################################
 require_wsl() {
   if ! $IS_WSL; then
-    redmsg "ERROR: This script requires WSL2."
+    red_msg "ERROR: This script requires WSL2."
     return 1
   fi
 }
@@ -293,6 +297,15 @@ dl() {
   # print path of downloaded file
   echo "$filepath"
 }
+
+################################################################################
+# Convert absolute path to path relative to current working directory
+# Arguments:
+#   Absolute path
+# Outputs:
+#   Relative path
+################################################################################
+relpath() { realpath --relative-to="$PWD" "$1" ; }
 
 ################################################################################
 # get the windows username (only applies to WSL2)
