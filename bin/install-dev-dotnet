@@ -2,7 +2,7 @@
 
 #shellcheck source=../lib.sh
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
-require_non_root
+lib_init
 
 if ! chkpkg packages-microsoft-prod; then
   log_msg "Installing microsoft repo"

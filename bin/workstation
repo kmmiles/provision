@@ -2,7 +2,7 @@
 
 #shellcheck source=../lib.sh
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
-require_non_root
+lib_init
 log_use_file
 
 scripts=(
@@ -18,10 +18,12 @@ scripts=(
   'install-base-ffmpeg'
   'install-home'
   'install-dev'
+  'install-dev-cmake'
   'install-dev-vscode'
   'install-dev-flutter'
   'install-dev-pony'
   'install-dev-dotnet'
+  'install-fonts'
   'install-qemu'
   'install-podman'
 )

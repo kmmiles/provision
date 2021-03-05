@@ -2,8 +2,7 @@
 
 #shellcheck source=../lib.sh
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
-require_non_root
-require_wsl
+lib_init
 
 #kernel_url="https://github.com/microsoft/WSL2-Linux-Kernel/archive/4.19.128-microsoft-standard.tar.gz"
 kernel_url=https://github.com/microsoft/WSL2-Linux-Kernel/archive/linux-msft-5.4.83.tar.gz

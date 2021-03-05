@@ -2,7 +2,7 @@
 
 #shellcheck source=../lib.sh
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
-require_non_root
+lib_init
 
 if ! chkpath qemu-system-x86_64 qemu-img kvm-ok; then
   sudo apt --no-install-recommends -y install \

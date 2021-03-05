@@ -38,8 +38,7 @@ vm_cpu_min="kvm64,\
 ################################################################################
 #shellcheck source=../lib.sh
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
-require_non_root
-require_wsl
+lib_init
 
 downloads="$HOME/winhome/Downloads"
 if [[ ! -d "$downloads" ]]; then

@@ -4,7 +4,7 @@
 
 #shellcheck source=../lib.sh
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
-require_non_root
+lib_init
 
 url="https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz"
 if [[ ! -f "$HOME"/.local/bin/nvim ]]; then

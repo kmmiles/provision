@@ -2,8 +2,7 @@
 
 #shellcheck source=../lib.sh
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
-require_non_root
-require_wsl
+lib_init
 
 bzsrc="${__ROOT}/kernelbuild/arch/x86/boot/bzImage"
 bzdest="$HOME/winhome/wsl2-kernel-$(date "+%s")"

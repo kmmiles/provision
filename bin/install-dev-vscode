@@ -2,7 +2,7 @@
 
 #shellcheck source=../lib.sh
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
-require_non_root
+lib_init
 
 url="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
 if $IS_GUI && ! $IS_WSL; then

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#shellcheck source=../lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
+lib_init
+
+if $IS_UBUNTU && ! chkpath "cmake"; then
+  log_msg "Installing cmake"
+  sudo apt -y --no-install-recommends install \
+    cmake \
+    cmake-doc
+fi

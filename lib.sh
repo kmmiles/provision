@@ -4,7 +4,6 @@
 
 ################################################################################
 # Functions to print a message in various colors
-#
 # Globals:
 #   None
 # Arguments:
@@ -173,57 +172,6 @@ status_msglen() {
 }
 
 ################################################################################
-# Require a script to be run as a non-root user
-# Outputs:
-#   Error message to stderr, if applicable
-# Returns:
-#   1 on error
-################################################################################
-require_non_root() {
-  if [[ "$(id -u)" == "0" ]]; then
-    red_msg "ERROR: Do not run this script as root."
-    return 1
-  fi
-}
-
-################################################################################
-# Require a script to be run as the root user
-# Globals:
-#   SUDO_USER
-# Outputs:
-#   Error message to stderr, if applicable
-# Returns:
-#   1 on error
-################################################################################
-require_root() {
-  if [[ "$(id -u)" != "0" ]]; then
-    red_msg "ERROR: please run as normal user w/ sudo"
-    return 1
-  fi
-
-  if [[ -z "$SUDO_USER" ]]; then
-    red_msg "ERROR: please run as normal user w/ sudo"
-    return 1
-  fi
-}
-
-################################################################################
-# Require WSL2 to run a script
-# Globals:
-#   IS_WSL 
-# Outputs:
-#   Error message to stderr, if applicable
-# Returns:
-#   1 on error
-################################################################################
-require_wsl() {
-  if ! $IS_WSL; then
-    red_msg "ERROR: This script requires WSL2."
-    return 1
-  fi
-}
-
-################################################################################
 # Check for programs in PATH
 # Arguments:
 #   Variable number of program names
@@ -330,6 +278,48 @@ get_win_user() {
     done
 }
 
+################################################################################
+# init function for scripts to run after sourcing this library
+# Arguments:
+#   None
+# Returns:
+#   1 on error
+################################################################################
+lib_init() {
+  # ensure we're not an idiot running our scripts as root
+  if [[ "$(id -u)" == "0" ]]; then
+    2>&1 red_msg "ERROR: Do not run this script as root."
+    return 1
+  fi
+
+  # for wsl2 we need some links in $HOME to exist
+  if $IS_WSL; then
+    path="$HOME/winhome"
+
+    if [[ ! -L "$path" || ! -d "$path" ]]; then
+      echo "Creating winhome link in $HOME/winhome..."
+      win_drive="$(basename "$(grep drvfs /proc/self/mounts | head -n 1 | cut -d' ' -f 2)")"
+      win_user="$(get_win_user "$win_drive")"
+      win_home="/mnt/$win_drive/Users/$win_user"
+      if [ -d "$win_home" ]; then
+        ln -vsf "$win_home" "$HOME/winhome"
+      fi
+
+      for d in Downloads Music; do
+        if [[ ! -d "$HOME/$d" ]]; then
+          ln -vsf "$win_home/$d" "$HOME/$d"
+        fi
+      done
+    fi
+  fi
+}
+
+#*****************************************************************************#
+# end of functions
+# 
+# export some global variables and set script options
+#*****************************************************************************#
+
 # basic text colors
 TEXT_BOLD=$(tput bold)
 TEXT_RED=$(tput setaf 1)
@@ -381,38 +371,9 @@ else
 fi
 export IS_UBUNTU IS_DEBIAN IS_WSL IS_GUI
 
+# set options for scripts
 if [[ "$__SOURCE" == "script" ]]; then
   set -o errexit
   set -o pipefail
   set -o nounset
 fi
-
-
-if [[ "${DEBUG:-}" ]]; then
-  echo "*** Debug mode enabled ***"
-  set -o xtrace
-else
-  set +o xtrace
-fi
-
-# TODO: main function
-if $IS_WSL; then
-  path="$HOME/winhome"
-
-  if [[ ! -L "$path" || ! -d "$path" ]]; then
-    echo "Creating winhome link in $HOME/winhome..."
-    win_drive="$(basename "$(grep drvfs /proc/self/mounts | head -n 1 | cut -d' ' -f 2)")"
-    win_user="$(get_win_user "$win_drive")"
-    win_home="/mnt/$win_drive/Users/$win_user"
-    if [ -d "$win_home" ]; then
-      ln -vsf "$win_home" "$HOME/winhome"
-    fi
-
-    for d in Downloads Music; do
-      if [[ ! -d "$HOME/$d" ]]; then
-        ln -vsf "$win_home/$d" "$HOME/$d"
-      fi
-    done
-  fi
-fi
-

@@ -4,7 +4,7 @@
 ################################################################################
 #shellcheck source=../lib.sh
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
-require_non_root
+lib_init
 
 pp_url="https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping"
 exa_url="https://github.com/ogham/exa/releases/download/v0.9.0/exa-linux-x86_64-0.9.0.zip"
