@@ -4,7 +4,7 @@ my provision scripts and dotfiles for ubuntu (metal, VM or WSL2)
 
 ## install
 
-### ubuntu workstation
+### workstation
 
 ```bash
 mkdir -p ~/Code && cd ~/Code \
