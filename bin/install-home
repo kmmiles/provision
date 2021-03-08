@@ -2,8 +2,8 @@
 ################################################################################
 # Installs various tools in $HOME
 ################################################################################
-#shellcheck source=../lib.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
+#shellcheck source=../lib/provision.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
 lib_init
 
 pp_url="https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping"
@@ -14,15 +14,28 @@ gb_url="https://github.com/morhetz/gruvbox.git"
 yt_url="https://yt-dl.org/downloads/latest/youtube-dl"
 
 local_dir="$HOME/.local"
+lib_dir="$local_dir/lib"
 bin_dir="$local_dir/bin"
 vim_dir="$HOME/.vim/pack/git-plugins/start"
 
 mkdir -p "$bin_dir" "$vim_dir"
 
 ################################################################################
+# link our library
+################################################################################
+mkdir -p "${lib_dir}" "${lib_dir}/provision.sh.d"
+ln -sf "${__ROOT}/lib/provision.sh" "${lib_dir}/provision.sh"
+pushd "${__ROOT}/lib/provision.sh.d" > /dev/null 2>&1
+find . -mindepth 1 -type f |
+  while read -r lib; do
+    rm -f "${lib_dir}/provision.sh.d/${lib}"
+    ln -sf "${__ROOT}/lib/provision.sh.d/${lib}" "${lib_dir}/provision.sh.d/${lib}"
+  done
+popd > /dev/null 2>&1
+
+################################################################################
 # link some repo scripts
 ################################################################################
-ln -sf "${__ROOT}/lib.sh" "${local_dir}/lib.sh"
 for s in dl ytmp3 passgen woc ghclone; do
   ln -sf "${__ROOT}/bin/${s}" "${bin_dir}/${s}"
 done

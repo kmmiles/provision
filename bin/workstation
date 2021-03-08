@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#shellcheck source=../lib.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
+#shellcheck source=../lib/provision.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
 lib_init
 log_use_file
 
@@ -11,20 +11,23 @@ scripts=(
   'uninstall-snapd'
   'update-packages'
   'upgrade-packages'
+  'autoremove-packages'
   'install-base'
   'install-base-nvim'
   'install-base-gpg'
   'install-base-btm'
   'install-base-ffmpeg'
   'install-home'
+  'install-home-nord'
+  'install-fonts'
+  'install-alacritty'
   'install-dev'
   'install-dev-cmake'
   'install-dev-vscode'
   'install-dev-flutter'
   'install-dev-pony'
   'install-dev-dotnet'
-  'install-fonts'
-  'install-qemu'
+  'install-kvm'
   'install-podman'
 )
 

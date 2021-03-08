@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#shellcheck source=../lib.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
+#shellcheck source=../lib/provision.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
 lib_init
 
 if chkpath ls bash; then
@@ -26,12 +26,11 @@ fi
 echo "test logs"
 
 log_msg "This is log_msg"
-log_err "This is logerr"
-log_warn "This is logwarn"
-log_info "This is loginfo"
+log_err "This is log_err"
+log_warn "This is log_warn"
+log_info "This is log_info"
 
 echo "exports"
-echo "__SOURCE: $__SOURCE"
 echo "__DIR: $__DIR"
 echo "__FILE: $__FILE"
 echo "__ROOT: $__ROOT"
@@ -39,4 +38,8 @@ echo "IS_WSL: $IS_WSL"
 echo "IS_DEBIAN: $IS_DEBIAN"
 echo "IS_UBUNTU: $IS_UBUNTU"
 echo "IS_GUI: $IS_GUI"
+
+dir="$(abspath .)"
+echo "abspath of '.' = $dir"
+echo "relpath of '$dir' = $(relpath "$dir")"
 

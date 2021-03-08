@@ -1,12 +1,13 @@
 #!/bin/bash
 
-#shellcheck source=../lib.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
+#shellcheck source=../lib/provision.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
 lib_init
 
 dest_basedir="$HOME/Code"
 owner_default="$(id -un)"
 shallow=false
+branch=
 
 usage() {
   cat << EOF >&2
@@ -18,18 +19,19 @@ Clones <repo> to "$dest_basedir" if it doesn't exist then prints the location.
 
 OPTIONS:
 
-  -s    Shallow clone
+  -b  <branch>  Point to <branch>  
+  -s            Shallow clone
 
 EXAMPLES:
 
 ghclone bad-code
 ghclone morhetz/gruvbox
-
 EOF
 }
 
-while getopts 's' flag; do
+while getopts 'sb:' flag; do
   case "${flag}" in
+    b) branch="$OPTARG" ;;
     s) shallow=true ;;
     *) usage ; exit 1 ;; 
   esac
@@ -50,7 +52,11 @@ fi
 url="https://github.com/$owner/$name"
 dest_dir="$dest_basedir/$(basename "$url" .git)"
 
+# build up cmdstr
 cmdstr="git clone"
+if [[ -n "$branch" ]]; then
+  cmdstr="$cmdstr -b $branch"
+fi
 if $shallow; then
   cmdstr="$cmdstr --depth 1"
 fi
@@ -58,7 +64,7 @@ cmdstr="$cmdstr $url $dest_dir"
 
 if [[ ! -d "$dest_dir" ]]; then
   mkdir -p "$dest_basedir"
-  log_info "Cloning $url to $dest_dir..."
+  log_info "Executing: $cmdstr"
   if ! eval "$cmdstr" > /dev/null; then
     log_err "command failed: $cmdstr"
     exit 1

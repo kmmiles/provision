@@ -1,0 +1,33 @@
+#!/bin/bash
+################################################################################
+# Installs all the nord themes
+################################################################################
+#shellcheck source=../lib/provision.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
+lib_init
+
+names=(
+  'nord-dircolors'
+  'nord-tmux'
+  'nord-vim'
+)
+
+for name in "${names[@]}"; do
+  repo_dir="$("$__ROOT"/bin/ghclone -s arcticicestudio/"$name")"
+  case "${name}" in
+    nord-dircolors)
+      symlink "$repo_dir/src/dir_colors" "$HOME/.dir_colors"
+      ;;
+    nord-tmux)
+      mkdir -p "$HOME"/.tmux
+      symlink "$repo_dir"/nord.tmux "$HOME"/.tmux/nord.tmux
+      ;;
+    nord-vim)
+      mkdir -p "$HOME"/.vim/colors
+      symlink "$repo_dir"/colors/nord.vim "$HOME"/.vim/colors/nord.vim
+      ;;
+    *)
+      log_err "Unexpected case '${name}'"
+      ;;
+  esac
+done

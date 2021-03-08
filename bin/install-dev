@@ -1,22 +1,20 @@
 #!/bin/bash
 
-#shellcheck source=../lib.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
+#shellcheck source=../lib/provision.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
 lib_init
 
-if ! chkpath clang python flex jq; then
-  log_msg "Installing base dev tools"
-  sudo apt --no-install-recommends -y install \
-    build-essential \
-    clang \
-    manpages-dev \
-    libncurses-dev \
-    python \
-    python-is-python3 \
-    bison \
-    flex \
-    libssl-dev \
-    libelf-dev \
-    shellcheck \
-    jq
-fi
+log_msg "Installing base dev tools"
+sudo apt --no-install-recommends -y install \
+  build-essential \
+  clang \
+  clang-tidy \
+  manpages-dev \
+  libncurses-dev \
+  python-is-python3 \
+  bison \
+  flex \
+  libssl-dev \
+  libelf-dev \
+  shellcheck \
+  jq

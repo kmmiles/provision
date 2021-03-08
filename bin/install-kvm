@@ -1,0 +1,21 @@
+#!/bin/bash
+
+#shellcheck source=../lib/provision.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
+lib_init
+
+# we always want these tools
+if ! chkpath qemu-system-x86_64 qemu-img kvm-ok; then
+  sudo apt --no-install-recommends -y install \
+    cpu-checker \
+    qemu-kvm \
+    qemu-utils
+fi
+
+# bare metal desktops want virt-manager
+if ! $IS_WSL && $IS_GUI; then
+  if ! chkpath virt-manager; then
+    sudo apt -y install \
+      virt-manager
+  fi
+fi

@@ -4,6 +4,4 @@
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
 lib_init
 
-log_msg "Installing ffmpeg..."
-sudo apt --no-install-recommends -y install \
-  ffmpeg 
+phonepath
