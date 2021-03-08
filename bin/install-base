@@ -4,8 +4,7 @@
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
 lib_init
 
-log_msg "Installing base packages"
-
+log_msg "Installing core packages..."
 sudo apt --no-install-recommends -y install \
   apt-transport-https \
   apt-file \
@@ -23,5 +22,37 @@ sudo apt --no-install-recommends -y install \
   tree \
   ncdu
 
+log_msg "Installing gpg packages..."
+sudo apt --no-install-recommends -y install \
+  dirmngr \
+  gnupg \
+  gnupg-l10n \
+  gnupg-utils \
+  gpg \
+  gpg-agent \
+  gpg-wks-client \
+  gpg-wks-server \
+  gpgconf \
+  gpgsm \
+  libassuan0 \
+  libksba8 \
+  libnpth0 \
+  pinentry-curses
 
+if [[ ! -f "$HOME"/.local/bin/nvim ]]; then
+  log_msg "Installing nightly build of neovim..."
+  url="https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz"
+  tar xvfz "$(dl "$url")" --strip-components=1 -C "$HOME"/.local
+fi
 
+if ! chkpath btm; then
+  log_msg "Installing btm..."
+  btm_url="https://github.com/ClementTsang/bottom/releases/download/0.5.7/bottom_0.5.7_amd64.deb"
+  sudo dpkg -i "$(dl "$btm_url")"
+fi
+
+if ! chkpath ffmpeg; then
+  log_msg "Installing ffmpeg..."
+  sudo apt --no-install-recommends -y install \
+    ffmpeg 
+fi

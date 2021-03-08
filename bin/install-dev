@@ -4,7 +4,7 @@
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
 lib_init
 
-log_msg "Installing base dev tools"
+log_msg "Installing core dev tools..."
 sudo apt --no-install-recommends -y install \
   build-essential \
   clang \
@@ -18,3 +18,10 @@ sudo apt --no-install-recommends -y install \
   libelf-dev \
   shellcheck \
   jq
+
+if $IS_UBUNTU && ! chkpath "cmake"; then
+  log_msg "Installing cmake..."
+  sudo apt -y --no-install-recommends install \
+    cmake \
+    cmake-doc
+fi
