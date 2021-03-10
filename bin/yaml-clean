@@ -1,0 +1,3 @@
+#!/bin/bash
+
+yq eval -j "$1" | yq eval -P -

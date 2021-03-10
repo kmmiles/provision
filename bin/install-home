@@ -39,7 +39,7 @@ popd > /dev/null 2>&1
 ################################################################################
 # link some repo scripts
 ################################################################################
-for s in dl ytmp3 passgen woc ghclone; do
+for s in yaml-clean dl ytmp3 passgen woc ghclone; do
   symlink "${__ROOT}/bin/${s}" "${bin_dir}/${s}"
 done
 
