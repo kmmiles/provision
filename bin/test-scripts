@@ -43,3 +43,5 @@ dir="$(abspath .)"
 echo "abspath of '.' = $dir"
 echo "relpath of '$dir' = $(relpath "$dir")"
 
+echo "Test ERR trap"
+false

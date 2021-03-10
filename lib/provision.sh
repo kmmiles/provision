@@ -1,16 +1,7 @@
-#!/bin/bash
-# library of common things used by scripts 
-##############################################################################
-
 if [[ -z "${BASH_SOURCE[1]:-}" ]]; then
   printf "Don't source from the shell.\n"
   return 1
 fi
-
-# set options
-set -o errexit
-set -o pipefail
-set -o nounset
 
 # Directory of the script that sourced this library. 
 __DIR="$(cd "$(dirname "${BASH_SOURCE[1]}")" && pwd)"
@@ -24,3 +15,10 @@ export __DIR __FILE __ROOT __SOURCE
 # shellcheck disable=SC1090
 for s in "$__ROOT"/lib/provision.sh.d/*.sh; do source "$s"; done
 
+# set options
+set -o errexit
+set -o pipefail
+set -o nounset
+
+# set trap
+trap handle_trap_err ERR

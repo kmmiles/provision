@@ -12,6 +12,8 @@ glow_url="https://github.com/charmbracelet/glow/releases/download/v1.0.2/glow_1.
 ale_url="https://github.com/dense-analysis/ale.git"
 gb_url="https://github.com/morhetz/gruvbox.git"
 yt_url="https://yt-dl.org/downloads/latest/youtube-dl"
+yq_url="https://github.com/mikefarah/yq/releases/download/v4.6.1/yq_linux_amd64.tar.gz"
+fnm_url="https://github.com/Schniz/fnm/releases/download/v1.23.0/fnm-linux.zip"
 
 local_dir="$HOME/.local"
 lib_dir="$local_dir/lib"
@@ -73,11 +75,28 @@ if [[ ! -f "$bin_dir/exa" ]]; then
 fi
 
 ################################################################################
+# fnm
+################################################################################
+if [[ ! -f "$bin_dir/fnm" ]]; then
+  unzip -qu "$(dl $fnm_url)" -d "$DOWNLOADS"
+  install -D -v -m 755 -t "$bin_dir" "$DOWNLOADS/fnm"
+fi
+
+################################################################################
 # glow
 ################################################################################
 if [[ ! -f "$bin_dir"/glow ]]; then
   tar xmzf "$(dl $glow_url)" -C "$DOWNLOADS" glow
   install -D -v -m 755 -t "$bin_dir" "$DOWNLOADS/glow"
+fi
+
+################################################################################
+# yq 
+################################################################################
+if [[ ! -f "$bin_dir"/yq ]]; then
+  tar xmzf "$(dl $yq_url)" -C "$DOWNLOADS" ./yq_linux_amd64
+  mv -fv "$DOWNLOADS/yq_linux_amd64" "$DOWNLOADS/yq"
+  install -D -v -m 755 -t "$bin_dir" "$DOWNLOADS/yq"
 fi
 
 ################################################################################

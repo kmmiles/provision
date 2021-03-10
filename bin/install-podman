@@ -5,49 +5,34 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
 lib_init
 
 if ! chkpath podman; then
-  if $IS_UBUNTU; then
     . /etc/os-release
-    echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-    curl -L "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key" | sudo apt-key add -
+
+    echo \
+      "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | \
+        sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+
+    curl -L \
+      "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key" | \
+        sudo apt-key add -
+
     sudo apt-get update
     sudo apt-get -y upgrade
     sudo apt-get -y install podman
-  elif $IS_DEBIAN; then
-    # Add buster backports repo
-    buster_backports=/etc/apt/sources.list.d/buster-backports.list
-    if [[ ! -f $buster_backports ]]; then
-      echo 'deb http://deb.debian.org/debian buster-backports main' | \
-        sudo tee $buster_backports
-    fi
-
-    # Add kubic libcontainers repo
-    kubic=/etc/apt/sources.list.d/kubic.list
-    if [[ ! -f $kubic ]]; then
-      echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' | \
-        sudo tee $kubic
-    fi
-
-    # Add kubic key
-    curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/Release.key | \
-      sudo apt-key add -
-
-    # update / install
-    sudo apt-get update
-    sudo apt-get -y -t buster-backports install libseccomp2
-    sudo apt-get -y install podman
-  else
-    echo "Unknown distribution."
-    exit 1
-  fi
 fi
 
-# Add wsl2 config on the user level
-if $IS_WSL; then
-  if [[ ! -f "$HOME/.config/containers/containers.conf" ]]; then
-    mkdir -p ~/.config/containers
-    ln -sf "${__ROOT}/etc/containers/containers.conf" "$HOME/.config/containers/containers.conf"
-  fi
-fi
+# link config files
+mkdir -p "$HOME"/.config/containers
+symlink "${__ROOT}/etc/containers/registries.conf" "$HOME"/.config/containers/registries.conf
+symlink "${__ROOT}/etc/containers/containers.conf" "$HOME"/.config/containers/containers.conf
+symlink "${__ROOT}/etc/containers/storage.conf" "$HOME"/.config/containers/storage.conf
+symlink "${__ROOT}/etc/containers/policy.json" "$HOME"/.config/containers/policy.json
+
+#if $IS_WSL; then
+#  if [[ ! -f "$HOME/.config/containers/containers.conf" ]]; then
+#    mkdir -p ~/.config/containers
+#    ln -sf "${__ROOT}/etc/containers/containers.conf" "$HOME/.config/containers/containers.conf"
+#  fi
+#fi
 
 # Add docker alias command
 if ! chkpath docker; then
