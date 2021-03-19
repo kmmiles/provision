@@ -2,17 +2,6 @@
 
 set -eu
 
-# bootstrap 
-if [[ ! -d "$HOME"/.local/lib/bash-tools ]]; then
-  printf "%s" "Installing bash-tools..."
-  ( 
-    set -eu ; \
-    d="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" && \
-    "$d"/install-bash-tools
-  ) > /dev/null 2>&1
-  printf "%s\n" "done."
-fi
-
 if [[ ! -d "$HOME"/Code/provision ]]; then
   mkdir -p "$HOME"/Code
   git clone https://github.com/kmmiles/provision.git "$HOME"/Code/provision

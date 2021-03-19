@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# install bash-tools if needed
+if [[ ! -d "$HOME"/.local/lib/bash-tools ]]; then
+  printf "%s" "Installing bash-tools..."
+  ( 
+    set -eu ; \
+    d="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" && \
+    "$d"/install-bash-tools
+  ) > /dev/null 2>&1
+  printf "%s\n" "done."
+fi
+
 # shellcheck source=/dev/null
 . "$HOME"/.local/lib/bash-tools/lib.sh
 log_use_file
