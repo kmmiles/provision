@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu
+
 # bootstrap 
 if [[ ! -d "$HOME"/.local/lib/bash-tools ]]; then
   printf "%s" "Installing bash-tools..."
@@ -10,3 +12,10 @@ if [[ ! -d "$HOME"/.local/lib/bash-tools ]]; then
   ) > /dev/null 2>&1
   printf "%s\n" "done."
 fi
+
+if [[ ! -d "$HOME"/Code/provision ]]; then
+  mkdir -p "$HOME"/Code
+  git clone https://github.com/kmmiles/provision.git "$HOME"/Code/provision
+fi
+
+"$HOME"/Code/provision/bin/workstation

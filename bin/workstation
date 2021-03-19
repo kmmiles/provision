@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# bootstrap ensures git and bash-tools are installed,
-# which we'll need for anything further
-"$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/bootstrap"
-
 # shellcheck source=/dev/null
 . "$HOME"/.local/lib/bash-tools/lib.sh
 log_use_file
