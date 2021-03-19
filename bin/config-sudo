@@ -3,9 +3,8 @@
 # Quick and dirty script to prevent `sudo` from asking for a password.
 ################################################################################
 
-#shellcheck source=../lib/provision.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
-lib_init
+# shellcheck source=/dev/null
+. "$HOME"/.local/lib/bash-tools/lib.sh
 
 sudoers_group="sudo"
 sudoers_file="/etc/sudoers.d/passwordless"

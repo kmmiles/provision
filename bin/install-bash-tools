@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# install `bash-tools` library
+# everything else needs it so it's effectively a bootstrap
+
+url=https://github.com/kmmiles/bash-tools.git
+dest="$HOME"/Code/bash-tools
+
+set -eux
+
+# git clone if it doesn't exist
+if [[ ! -d "$dest" ]]; then
+  mkdir -p "$(dirname "$dest")"
+  git clone "$url" "$dest"
+fi
+
+"$dest"/bin/install

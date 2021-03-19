@@ -1,8 +1,7 @@
 #!/bin/bash
 
-#shellcheck source=../lib/provision.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
-lib_init
+# shellcheck source=/dev/null
+. "$HOME"/.local/lib/bash-tools/lib.sh
 
 log_msg "Installing core packages..."
 sudo apt --no-install-recommends -y install \
@@ -51,8 +50,9 @@ if ! chkpath btm; then
   sudo dpkg -i "$(dl "$btm_url")"
 fi
 
-if ! chkpath ffmpeg; then
-  log_msg "Installing ffmpeg..."
+if ! chkpath ffmpeg id3v2; then
+  log_msg "Installing media packages..."
   sudo apt --no-install-recommends -y install \
-    ffmpeg 
+    ffmpeg \
+    id3v2
 fi

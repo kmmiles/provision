@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#shellcheck source=../lib/provision.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
-lib_init
+# shellcheck source=/dev/null
+. "$HOME"/.local/lib/bash-tools/lib.sh
 
+lb="$HOME"/.local/bin
 if ! chkpath flutter; then
   log_msg "Installing flutter"
   sudo apt --no-install-recommends -y install \
@@ -16,6 +16,6 @@ if ! chkpath flutter; then
     xz-utils \
     libglu1-mesa
 
-  flutter_dir="$("$__ROOT"/bin/ghclone -s -b stable flutter/flutter)"
+  flutter_dir="$("$lb"/ghclone -s -b stable flutter/flutter)"
   "$flutter_dir"/bin/flutter precache
 fi

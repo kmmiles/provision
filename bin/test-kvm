@@ -36,9 +36,8 @@ vm_cpu_min="kvm64,\
 +clflushopt,+xsaveopt,+xsavec,+xgetbv1,+xsaves"
 
 ################################################################################
-#shellcheck source=../lib/provision.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
-lib_init
+# shellcheck source=/dev/null
+. "$HOME"/.local/lib/bash-tools/lib.sh
 
 downloads="$HOME/winhome/Downloads"
 if [[ ! -d "$downloads" ]]; then

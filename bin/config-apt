@@ -4,9 +4,8 @@
 # This prevents re-downloading the same packages across WSL2 distributions.
 ################################################################################
 
-#shellcheck source=../lib/provision.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
-lib_init
+# shellcheck source=/dev/null
+. "$HOME"/.local/lib/bash-tools/lib.sh
 
 if $IS_WSL; then
   apt_conf_dir="/etc/apt/apt.conf.d"

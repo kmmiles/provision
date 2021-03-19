@@ -2,9 +2,8 @@
 ################################################################################
 # Installs various tools in $HOME
 ################################################################################
-#shellcheck source=../lib/provision.sh
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/provision.sh"
-lib_init
+# shellcheck source=/dev/null
+. "$HOME"/.local/lib/bash-tools/lib.sh
 
 pp_url="https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping"
 exa_url="https://github.com/ogham/exa/releases/download/v0.9.0/exa-linux-x86_64-0.9.0.zip"
@@ -21,27 +20,6 @@ bin_dir="$local_dir/bin"
 vim_dir="$HOME/.vim/pack/git-plugins/start"
 
 mkdir -p "$bin_dir" "$vim_dir"
-
-################################################################################
-# link our library
-################################################################################
-mkdir -p "${lib_dir}" "${lib_dir}/provision.sh.d"
-symlink "${__ROOT}/lib/provision.sh" "${lib_dir}/provision.sh"
-pushd "${__ROOT}/lib/provision.sh.d" > /dev/null 2>&1
-find . -mindepth 1 -type f |
-  while read -r lib; do
-    symlink \
-      "${__ROOT}/lib/provision.sh.d/${lib}" \
-      "${lib_dir}/provision.sh.d/${lib}"
-  done
-popd > /dev/null 2>&1
-
-################################################################################
-# link some repo scripts
-################################################################################
-for s in opacity yaml-clean dl ytmp3 passgen woc ghclone; do
-  symlink "${__ROOT}/bin/${s}" "${bin_dir}/${s}"
-done
 
 ################################################################################
 # link dotfiles
@@ -124,8 +102,9 @@ names=(
   'nord-vim'
 )
 
+lb="$HOME"/.local/bin
 for name in "${names[@]}"; do
-  repo_dir="$("$__ROOT"/bin/ghclone -s arcticicestudio/"$name")"
+  repo_dir="$("$lb"/ghclone -s arcticicestudio/"$name")"
   case "${name}" in
     nord-dircolors)
       symlink "$repo_dir/src/dir_colors" "$HOME/.dir_colors"
