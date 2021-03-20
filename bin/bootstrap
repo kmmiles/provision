@@ -7,4 +7,15 @@ if [[ ! -d "$HOME"/Code/provision ]]; then
   git clone https://github.com/kmmiles/provision.git "$HOME"/Code/provision
 fi
 
-echo "TYPE: $TYPE"
+case "${TYPE:-}" in
+  workstation)
+    "$HOME"/Code/provision/bin/workstation
+    ;;
+  useronly)
+    "$HOME"/Code/provision/bin/useronly
+    ;;
+  *)
+    echo "Invalid TYPE"
+    exit 1
+    ;;
+esac
