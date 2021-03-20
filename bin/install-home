@@ -18,6 +18,7 @@ local_dir="$HOME/.local"
 lib_dir="$local_dir/lib"
 bin_dir="$local_dir/bin"
 vim_dir="$HOME/.vim/pack/git-plugins/start"
+downloads="$HOME"/Downloads
 
 mkdir -p "$bin_dir" "$vim_dir"
 
@@ -47,34 +48,34 @@ fi
 # exa
 ################################################################################
 if [[ ! -f "$bin_dir/exa" ]]; then
-  unzip -qu "$(dl $exa_url)" -d "$DOWNLOADS"
-  mv -fv "$DOWNLOADS/exa-linux-x86_64" "$DOWNLOADS/exa"
-  install -D -v -m 755 -t "$bin_dir" "$DOWNLOADS/exa"
+  unzip -qu "$(dl $exa_url)" -d "$downloads"
+  mv -fv "$downloads/exa-linux-x86_64" "$downloads/exa"
+  install -D -v -m 755 -t "$bin_dir" "$downloads/exa"
 fi
 
 ################################################################################
 # fnm
 ################################################################################
 if [[ ! -f "$bin_dir/fnm" ]]; then
-  unzip -qu "$(dl $fnm_url)" -d "$DOWNLOADS"
-  install -D -v -m 755 -t "$bin_dir" "$DOWNLOADS/fnm"
+  unzip -qu "$(dl $fnm_url)" -d "$downloads"
+  install -D -v -m 755 -t "$bin_dir" "$downloads/fnm"
 fi
 
 ################################################################################
 # glow
 ################################################################################
 if [[ ! -f "$bin_dir"/glow ]]; then
-  tar xmzf "$(dl $glow_url)" -C "$DOWNLOADS" glow
-  install -D -v -m 755 -t "$bin_dir" "$DOWNLOADS/glow"
+  tar xmzf "$(dl $glow_url)" -C "$downloads" glow
+  install -D -v -m 755 -t "$bin_dir" "$downloads/glow"
 fi
 
 ################################################################################
 # yq 
 ################################################################################
 if [[ ! -f "$bin_dir"/yq ]]; then
-  tar xmzf "$(dl $yq_url)" -C "$DOWNLOADS" ./yq_linux_amd64
-  mv -fv "$DOWNLOADS/yq_linux_amd64" "$DOWNLOADS/yq"
-  install -D -v -m 755 -t "$bin_dir" "$DOWNLOADS/yq"
+  tar xmzf "$(dl $yq_url)" -C "$downloads" ./yq_linux_amd64
+  mv -fv "$downloads/yq_linux_amd64" "$downloads/yq"
+  install -D -v -m 755 -t "$bin_dir" "$downloads/yq"
 fi
 
 ################################################################################
