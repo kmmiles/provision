@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -eu
+
+if [[ ! -d "$HOME"/Code/provision ]]; then
+  mkdir -p "$HOME"/Code
+  git clone https://github.com/kmmiles/provision.git "$HOME"/Code/provision
+fi
+
+echo "TYPE: $TYPE"

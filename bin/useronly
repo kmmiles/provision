@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# install bash-tools if needed
+if [[ ! -d "$HOME"/.local/lib/bash-tools ]]; then
+  printf "%s" "Installing bash-tools..."
+  ( 
+    set -eu ; \
+    d="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" && \
+    "$d"/install-bash-tools
+  ) > /dev/null 2>&1
+  printf "%s\n" "done."
+fi
+
+# shellcheck source=/dev/null
+. "$HOME"/.local/lib/bash-tools/lib.sh
+log_use_file
+
+scripts=(
+  'install-home'
+)
+
+for script in "${scripts[@]}"; do
+  status_msg "Running $script..."
+  if ! "${__ROOT}/bin/${script}" >> "$__LOGFILE" 2>&1; then
+    status_fail
+    exit 1
+  else
+    status_ok
+  fi
+done
