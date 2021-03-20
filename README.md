@@ -1,9 +1,20 @@
 # provision
 
-my provision scripts and dotfiles for ubuntu (metal, VM or WSL2)
+my provision scripts and dotfiles for ubuntu. works on metal, VM or WSL2.
 
 ## install
 
+### workstation
+
+Installs everything.
+
 ```bash
-curl -s https://raw.githubusercontent.com/kmmiles/provision/main/bin/bootstrap-workstation | bash
+curl -s https://raw.githubusercontent.com/kmmiles/provision/main/bin/bootstrap-workstation | TYPE=workstation bash
 ```
+
+### useronly
+
+Installs dotfiles and $HOME tools. No root access.
+
+```bash
+curl -s https://raw.githubusercontent.com/kmmiles/provision/main/bin/bootstrap-workstation | TYPE=useronly bash
