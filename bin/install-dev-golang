@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# shellcheck source=/dev/null
+. "$HOME"/.local/lib/bash-tools/lib.sh
+
+PATH=$HOME/.local/share/ponyup/bin/:$PATH
+if ! chkpath ponyup; then
+  log_msg "Installing ponyup"
+  sh -c "$(curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/ponylang/ponyup/latest-release/ponyup-init.sh)"
+fi
+
+if ! chkpath ponyc; then
+  log_msg "Installing ponyc"
+  ponyup update ponyc release
+fi 

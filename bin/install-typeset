@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# shellcheck source=/dev/null
+. "$HOME"/.local/lib/bash-tools/lib.sh
+
+log_msg "Installing typesetting packages..."
+sudo apt --no-install-recommends -y install \
+  aspell \
+  texlive-latex-base \
+  texlive-latex-extra \
+  texlive-fonts-recommended \
+  groff \
+  zathura

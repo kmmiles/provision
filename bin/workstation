@@ -25,6 +25,7 @@ scripts=(
   'install-base'
   'install-home'
   'install-fonts'
+  'install-typeset'
   'install-alacritty'
   'install-dev'
   'install-dev-vscode'

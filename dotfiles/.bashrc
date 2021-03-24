@@ -7,7 +7,7 @@ esac
 # Source any bashrc files
 bashrcd="$HOME/.config/bashrc.d"
 if [[ -d "$bashrcd" ]]; then
-  for b in "$bashrcd"/*.bashrc; do
+  for b in "$bashrcd"/*.sh; do
     # shellcheck disable=SC1090
     source "$b"
   done
