@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 TEXT_BOLD=$(tput bold)
 TEXT_RED=$(tput setaf 1)
 TEXT_GREEN=$(tput setaf 2)
