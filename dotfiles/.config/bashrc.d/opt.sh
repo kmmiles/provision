@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 set bell-style none
 shopt -s checkwinsize
 shopt -s histappend

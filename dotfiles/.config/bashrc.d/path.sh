@@ -1,6 +1,3 @@
-#!/bin/bash
-
-GOBIN=$HOME/.local
 PONYBIN=$HOME/.local/share/ponyup/bin
 FLUTTERBIN=$HOME/Code/flutter/bin
 EMACSBIN=~/.emacs.d/bin
