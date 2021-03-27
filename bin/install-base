@@ -8,6 +8,10 @@ sudo apt --no-install-recommends -y install \
   apt-transport-https \
   apt-file \
   bash \
+  zsh \
+  zsh-doc \
+  zsh-autosuggestions \
+  zsh-syntax-highlighting \
   sudo \
   git \
   curl \

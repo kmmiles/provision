@@ -4,7 +4,12 @@
 . "$HOME"/.local/lib/bash-tools/lib.sh
 
 if $IS_GUI; then
-  log_msg "Installing fonts"
+  if ! chkpath "alacritty"; then
+    ppa_add "ppa:aslatter/ppa"
+    sudo apt -y install \
+      alacritty
+  fi
+
   sudo apt --no-install-recommends -y install \
     fonts-firacode 
 fi

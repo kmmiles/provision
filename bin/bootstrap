@@ -2,17 +2,19 @@
 
 set -eu
 
-if [[ ! -d "$HOME"/Code/provision ]]; then
-  mkdir -p "$HOME"/Code
-  git clone https://github.com/kmmiles/provision.git "$HOME"/Code/provision
+srcdir="$HOME"/.local/src
+
+if [[ ! -d "$srcdir"/provision ]]; then
+  mkdir -p "$srcdir"
+  git clone https://github.com/kmmiles/provision.git "$srcdir"/provision
 fi
 
 case "${TYPE:-}" in
   workstation)
-    "$HOME"/Code/provision/bin/workstation
+    "$srcdir"/provision/bin/workstation
     ;;
   useronly)
-    "$HOME"/Code/provision/bin/useronly
+    "$srcdir"/provision/bin/useronly
     ;;
   *)
     echo "Invalid TYPE"

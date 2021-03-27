@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=dwm
+Comment=dwm
+Exec=dwmstart
+Type=Application
+Keywords=dwm;

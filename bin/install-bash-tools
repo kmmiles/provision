@@ -6,7 +6,7 @@
 set -eu
 
 url=https://github.com/kmmiles/bash-tools.git
-dest="$HOME"/Code/bash-tools
+dest="$HOME"/.local/src/bash-tools
 
 # git clone if it doesn't exist
 if [[ ! -d "$dest" ]]; then
