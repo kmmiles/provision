@@ -31,5 +31,17 @@ if ! groups "$user" | grep -q "$sudoers_group"; then
   log_msg "Adding user \"$user\" to group \"$sudoers_group\""
   sudo /usr/sbin/usermod -a -G "$sudoers_group" "$sudoers_group"
 else
-  log_msg "User \"$user\" already belongs to group \"$sudoers_group\", doing nothing,"
+  log_msg "User \"$user\" already belongs to group \"$sudoers_group\", doing nothing."
 fi
+
+# lock root password
+password_state=$(sudo passwd -S root | cut -d' ' -f 2)
+if [[ "$password_state" != "L" ]]; then
+  log_msg "Locking root password"
+  sudo passwd -l root
+else
+  log_msg "Root password already locked, doing nothing."
+fi
+
+
+

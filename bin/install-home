@@ -123,3 +123,17 @@ for name in "${names[@]}"; do
       ;;
   esac
 done
+
+################################################################################
+# zsh plugins
+################################################################################
+plugins=(
+  "zsh-users/zsh-syntax-highlighting"
+  "zsh-users/zsh-autosuggestions"
+  "zsh-users/zsh-history-substring-search"
+  "zsh-users/zsh-completions"
+)
+
+for plugin in "${plugins[@]}"; do
+  "$HOME"/.local/bin/ghclone -s "$plugin" > /dev/null
+done

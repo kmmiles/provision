@@ -4,13 +4,12 @@ unsetopt beep
 bindkey -v
 
 # autocompletion
+if [[ -d "$HOME"/.local/src/zsh-completions/src ]]; then
+  fpath=("$HOME"/.local/src/zsh-completions/src $fpath)
+fi
 zstyle ':completion:*' menu select
 autoload -Uz compinit
 compinit
-
-# suggestions
-source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # history file settings
 HISTFILE=~/.cache/.zsh_history
@@ -83,4 +82,17 @@ fi
 
 # fnm 
 has fnm && eval "$(fnm env)"
+
+# plugins (do these last...for reasons)
+plugins=(
+  "$HOME/.local/src/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+  "$HOME/.local/src/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  "$HOME/.local/src/zsh-history-substring-search/zsh-history-substring-search.zsh"
+)
+
+for plugin in $plugins; do
+  if [[ -f "$plugin" ]]; then
+    source "$plugin"
+  fi
+done
 
