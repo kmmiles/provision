@@ -29,7 +29,7 @@ fi
 # add user to sudoers group
 if ! groups "$user" | grep -q "$sudoers_group"; then
   log_msg "Adding user \"$user\" to group \"$sudoers_group\""
-  sudo /usr/sbin/usermod -a -G "$sudoers_group" "$sudoers_group"
+  sudo /usr/sbin/usermod -a -G "$sudoers_group" "$user"
 else
   log_msg "User \"$user\" already belongs to group \"$sudoers_group\", doing nothing."
 fi

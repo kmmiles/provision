@@ -1,0 +1,5 @@
+PermitRootLogin no
+PermitRootLogin prohibit-password
+PasswordAuthentication no
+UsePAM no
+ChallengeResponseAuthentication no

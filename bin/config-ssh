@@ -1,0 +1,16 @@
+#!/bin/bash
+################################################################################
+# Disable some SSH stuff like password authentication and root logins
+################################################################################
+
+# shellcheck source=/dev/null
+. "$HOME"/.local/lib/bash-tools/lib.sh
+
+
+cfg="/etc/ssh/ssh_config.d/disable-bad"
+if [[ ! -f  "$cfg" ]]; then
+  log_msg "Creating \"$cfg\""
+  sudo cp -v "${__ROOT}/etc/ssh/ssh_config.d/disable-bad" "$cfg"
+else
+  log_msg "File \"$cfg\" already exists, doing nothing"
+fi

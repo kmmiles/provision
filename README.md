@@ -6,7 +6,7 @@ my provision scripts and dotfiles for ubuntu. works on metal, VM or WSL2.
 
 ### workstation
 
-Installs everything.
+installs everything.
 
 ```bash
 curl -s https://raw.githubusercontent.com/kmmiles/provision/main/bin/bootstrap | TYPE=workstation bash
@@ -14,7 +14,8 @@ curl -s https://raw.githubusercontent.com/kmmiles/provision/main/bin/bootstrap |
 
 ### useronly
 
-Installs dotfiles and $HOME tools. No root access.
+installs dotfiles and $HOME tools. no root access.
 
 ```bash
 curl -s https://raw.githubusercontent.com/kmmiles/provision/main/bin/bootstrap | TYPE=useronly bash
+```

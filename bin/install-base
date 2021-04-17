@@ -19,11 +19,15 @@ sudo apt --no-install-recommends -y install \
   tmux \
   man-db \
   manpages \
-  unzip \
-  bzip2 \
-  xz-utils \
   tree \
   ncdu
+
+log_msg "Installing archivers..."
+sudo apt --no-install-recommends -y install \
+  unzip \
+  bzip2 \
+  7zip-full \
+  xz-utils 
 
 log_msg "Installing gpg packages..."
 sudo apt --no-install-recommends -y install \

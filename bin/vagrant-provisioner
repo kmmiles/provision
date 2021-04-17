@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#    test.vm.synced_folder "./", "/mnt"
+#      domain.management_network_name = "my_cloud"
+#      domain.management_network_address = "10.1.0.0/24"
+
+echo "starting $0"
+echo "nameserver 8.8.8.8" | sudo tee -a /etc/resolv.conf

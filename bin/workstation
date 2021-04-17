@@ -31,6 +31,7 @@ scripts=(
   'install-dev-flutter'
   'install-dev-pony'
   'install-dev-dotnet'
+  'install-dev-golang'
   'install-kvm'
   'install-podman'
 )

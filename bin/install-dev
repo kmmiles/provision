@@ -18,9 +18,17 @@ sudo apt --no-install-recommends -y install \
   shellcheck \
   jq
 
+# to build gnu coreutils
+sudo apt --no-install-recommends -y install \
+  autopoint \
+  gperf \
+  texinfo
+
 if $IS_UBUNTU && ! chkpath "cmake"; then
   log_msg "Installing cmake..."
   sudo apt -y --no-install-recommends install \
     cmake \
     cmake-doc
 fi
+
+

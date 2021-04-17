@@ -3,13 +3,8 @@
 # shellcheck source=/dev/null
 . "$HOME"/.local/lib/bash-tools/lib.sh
 
-PATH=$HOME/.local/share/ponyup/bin/:$PATH
-if ! chkpath ponyup; then
-  log_msg "Installing ponyup"
-  sh -c "$(curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/ponylang/ponyup/latest-release/ponyup-init.sh)"
+golang_url="https://golang.org/dl/go1.16.3.linux-amd64.tar.gz"
+if [[ ! -d "$HOME"/.local/go ]]; then
+  tar xmzf "$(dl $golang_url)" -C "$HOME"/.local
 fi
 
-if ! chkpath ponyc; then
-  log_msg "Installing ponyc"
-  ponyup update ponyc release
-fi 
